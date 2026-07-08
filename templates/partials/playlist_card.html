@@ -1,0 +1,29 @@
+<div class="music-card">
+	<a href="{% url 'music:playlist_detail' playlist.pk %}">
+		<div class="cover-art">
+			{{ playlist.name|first|upper }}
+			<div class="equalizer"><span></span><span></span><span></span></div>
+		</div>
+	</a>
+	<a href="{% url 'music:playlist_detail' playlist.pk %}" class="card-title-music">{{ playlist.name }}</a>
+	<div class="card-artist">
+		{{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}
+		{% if playlist.owner != user %} · di {{ playlist.owner.username }}{% endif %}
+	</div>
+	<div class="mt-2">
+		{% if playlist.is_editorial %}<span class="genre-chip">Editoriale</span>
+		{% elif playlist.is_public %}<span class="genre-chip">Pubblica</span>
+		{% else %}<span class="genre-chip">Privata</span>{% endif %}
+	</div>
+	<div class="card-actions">
+		<a class="btn btn-ghost btn-sm" href="{% url 'music:playlist_detail' playlist.pk %}">Apri</a>
+		{% if playlist.owner != user %}
+		<form method="post" action="{% url 'music:toggle_save_playlist' playlist.pk %}">
+			{% csrf_token %}
+			<button type="submit" class="btn btn-sm {% if user in playlist.followers.all %}btn-accent{% else %}btn-ghost{% endif %}">
+				{% if user in playlist.followers.all %}★ Salvata{% else %}☆ Salva{% endif %}
+			</button>
+		</form>
+		{% endif %}
+	</div>
+</div>

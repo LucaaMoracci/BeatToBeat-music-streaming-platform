@@ -31,6 +31,11 @@ class Song(models.Model):
         related_name='added_songs',
     )
     duration = models.DurationField()
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='liked_songs',
+        blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -43,6 +48,20 @@ class Song(models.Model):
         return reverse('music:song_detail', kwargs={'pk': self.pk})
 
 
+class Comment(models.Model):
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField()
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_comments', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Commento di {self.author.username} su {self.song.title}'
+
+
 class Playlist(models.Model):
     name = models.CharField(max_length=150)
     owner = models.ForeignKey(
@@ -53,6 +72,13 @@ class Playlist(models.Model):
     songs = models.ManyToManyField(
         Song,
         related_name='playlists',
+        blank=True,
+    )
+    is_public = models.BooleanField(default=False)
+    is_editorial = models.BooleanField(default=False)
+    followers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='saved_playlists',
         blank=True,
     )
 

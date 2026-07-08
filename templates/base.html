@@ -50,6 +50,8 @@
 					<span class="role-badge admin">Admin</span>
 					{% elif user.role == 'curator' %}
 					<span class="role-badge curator">Curator</span>
+					{% elif user.role == 'moderator' %}
+					<span class="role-badge moderator">Moderator</span>
 					{% else %}
 					<span class="role-badge listener">Listener</span>
 					{% endif %}

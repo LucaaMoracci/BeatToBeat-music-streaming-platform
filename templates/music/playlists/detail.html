@@ -6,11 +6,24 @@
 <div class="page-header">
 	<div>
 		<h1 class="page-title">{{ playlist.name }}</h1>
-		<div class="page-subtitle">{{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}</div>
+		<div class="page-subtitle">
+			{% if playlist.is_editorial %}Editoriale{% elif playlist.is_public %}Pubblica{% else %}Privata{% endif %}
+			· {{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}
+			{% if playlist.owner != user %} · di {{ playlist.owner.username }}{% endif %}
+		</div>
 	</div>
 	<div class="actions">
-		<a class="btn btn-ghost" href="{% url 'music:playlist_update' playlist.pk %}">Rinomina</a>
+		{% if playlist.owner == user %}
+		<a class="btn btn-ghost" href="{% url 'music:playlist_update' playlist.pk %}">Modifica</a>
 		<a class="btn btn-danger" href="{% url 'music:playlist_delete' playlist.pk %}">Elimina</a>
+		{% else %}
+		<form method="post" action="{% url 'music:toggle_save_playlist' playlist.pk %}">
+			{% csrf_token %}
+			<button type="submit" class="btn {% if user in playlist.followers.all %}btn-accent{% else %}btn-ghost{% endif %}">
+				{% if user in playlist.followers.all %}★ Salvata{% else %}☆ Salva{% endif %}
+			</button>
+		</form>
+		{% endif %}
 	</div>
 </div>
 
@@ -21,15 +34,17 @@
 		<a href="{% url 'music:song_detail' song.pk %}" class="list-title">{{ song.title }}</a>
 		<div class="list-meta">{{ song.artist }} · {{ song.genre.name }} · {{ song.duration }}</div>
 	</div>
+	{% if playlist.owner == user %}
 	<form method="post" action="{% url 'music:remove_from_playlist' playlist.id song.id %}">
 		{% csrf_token %}
 		<button type="submit" class="btn btn-danger btn-sm">Rimuovi</button>
 	</form>
+	{% endif %}
 </div>
 {% endfor %}
 {% else %}
 <div class="empty">
-	Playlist vuota. Aggiungi brani dal <a href="{% url 'music:song_list' %}">catalogo</a>.
+	Playlist vuota.{% if playlist.owner == user %} Aggiungi brani dal <a href="{% url 'music:song_list' %}">catalogo</a>.{% endif %}
 </div>
 {% endif %}
 

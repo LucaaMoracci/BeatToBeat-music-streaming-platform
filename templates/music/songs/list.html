@@ -45,6 +45,7 @@
 		<a href="{% url 'music:song_detail' song.pk %}" class="card-title-music">{{ song.title }}</a>
 		<div class="card-artist">{{ song.artist }}</div>
 		<span class="genre-chip">{{ song.genre.name }}</span>
+		<div class="mt-2">{% include 'partials/like_button.html' %}</div>
 		<div class="card-actions">
 			<a class="btn btn-ghost btn-sm" href="{% url 'music:song_detail' song.pk %}">Apri</a>
 			{% if user.is_curator %}

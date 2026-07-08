@@ -86,6 +86,7 @@ python seed_data.py
 |---|---|---|
 | `admin_demo` | `admin12345` | Administrator (superuser) |
 | `curator_demo` | `curator12345` | Curator |
+| `moderator_demo` | `moderator12345` | Moderator |
 | `listener_demo` | `listener12345` | Listener |
 | `alice` / `bob` | `password123` | Listener |
 

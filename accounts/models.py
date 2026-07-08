@@ -6,6 +6,7 @@ class CustomUser(AbstractUser):
     class Role(models.TextChoices):
         LISTENER = 'listener', 'Listener'
         CURATOR = 'curator', 'Curator'
+        MODERATOR = 'moderator', 'Moderator'
 
     role = models.CharField(
         max_length=20,
@@ -16,6 +17,10 @@ class CustomUser(AbstractUser):
     @property
     def is_curator(self):
         return self.role == self.Role.CURATOR or self.is_superuser
+
+    @property
+    def is_moderator(self):
+        return self.role == self.Role.MODERATOR or self.is_superuser
 
     def sync_role_group(self):
         role_groups = Group.objects.filter(name__in=[r.label for r in self.Role])

@@ -8,7 +8,7 @@ django.setup()
 
 from django.contrib.auth import get_user_model
 
-from music.models import Genre, Playlist, Song
+from music.models import Comment, Genre, Playlist, Song
 
 User = get_user_model()
 
@@ -16,6 +16,7 @@ User = get_user_model()
 ACCOUNTS = [
     ('admin_demo', 'admin@beattobeat.test', 'curator', True, 'admin12345'),
     ('curator_demo', 'curator@beattobeat.test', 'curator', False, 'curator12345'),
+    ('moderator_demo', 'moderator@beattobeat.test', 'moderator', False, 'moderator12345'),
     ('listener_demo', 'listener@beattobeat.test', 'listener', False, 'listener12345'),
     ('alice', 'alice@beattobeat.test', 'listener', False, 'password123'),
     ('bob', 'bob@beattobeat.test', 'listener', False, 'password123'),
@@ -78,9 +79,28 @@ def seed():
     mix.songs.set([songs['Bohemian Rhapsody'], songs['Billie Jean'], songs['Lose Yourself']])
 
     rock, _ = Playlist.objects.get_or_create(name='Rock Classics', owner=users['alice'])
+    rock.is_public = True
+    rock.save()
     rock.songs.set([s for s in songs.values() if s.genre.name == 'Rock'])
+    rock.followers.set([users['listener_demo']])
 
-    print(f'Dati creati: {len(users)} utenti, {len(genres)} generi, {len(songs)} brani, 2 playlist.')
+    editorial, _ = Playlist.objects.get_or_create(name='Editors Picks', owner=users['curator_demo'])
+    editorial.is_public = True
+    editorial.is_editorial = True
+    editorial.save()
+    editorial.songs.set(list(songs.values())[:5])
+    editorial.followers.set([users['listener_demo'], users['bob']])
+
+    songs['Bohemian Rhapsody'].likes.set([users['listener_demo'], users['alice'], users['bob'], users['curator_demo']])
+    songs['Billie Jean'].likes.set([users['listener_demo'], users['alice']])
+    songs['Lose Yourself'].likes.set([users['bob']])
+
+    c1, _ = Comment.objects.get_or_create(song=songs['Bohemian Rhapsody'], author=users['alice'], text='Un capolavoro senza tempo.')
+    c1.likes.set([users['bob'], users['listener_demo']])
+    Comment.objects.get_or_create(song=songs['Bohemian Rhapsody'], author=users['bob'], text='La sezione operistica è pazzesca!')
+    Comment.objects.get_or_create(song=songs['Billie Jean'], author=users['listener_demo'], text='Il basso più famoso della storia.')
+
+    print(f'Dati creati: {len(users)} utenti, {len(genres)} generi, {len(songs)} brani, {Playlist.objects.count()} playlist.')
 
 
 if __name__ == '__main__':

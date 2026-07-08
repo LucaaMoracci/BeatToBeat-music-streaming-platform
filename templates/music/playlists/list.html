@@ -1,32 +1,39 @@
 {% extends 'base.html' %}
 
-{% block title %}Le mie playlist — BeatToBeat{% endblock %}
+{% block title %}Playlist — BeatToBeat{% endblock %}
 
 {% block content %}
 <div class="page-header">
-	<h1 class="page-title">Le mie playlist</h1>
+	<h1 class="page-title">Playlist</h1>
 	<a class="btn btn-accent" href="{% url 'music:playlist_create' %}">+ Nuova playlist</a>
 </div>
 
+<h2>Le mie playlist</h2>
 {% if playlists %}
 <div class="music-grid">
 	{% for playlist in playlists %}
-	<div class="music-card">
-		<a href="{% url 'music:playlist_detail' playlist.pk %}">
-			<div class="cover-art">
-				{{ playlist.name|first|upper }}
-				<div class="equalizer"><span></span><span></span><span></span></div>
-			</div>
-		</a>
-		<a href="{% url 'music:playlist_detail' playlist.pk %}" class="card-title-music">{{ playlist.name }}</a>
-		<div class="card-artist">{{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}</div>
-		<div class="card-actions">
-			<a class="btn btn-ghost btn-sm btn-block" href="{% url 'music:playlist_detail' playlist.pk %}">Apri</a>
-		</div>
-	</div>
+	{% include 'partials/playlist_card.html' %}
 	{% endfor %}
 </div>
 {% else %}
 <div class="empty">Non hai ancora creato playlist. Inizia ora!</div>
+{% endif %}
+
+{% if editorial_playlists %}
+<h2 class="mt-3">Playlist editoriali</h2>
+<div class="music-grid">
+	{% for playlist in editorial_playlists %}
+	{% include 'partials/playlist_card.html' %}
+	{% endfor %}
+</div>
+{% endif %}
+
+{% if saved_playlists %}
+<h2 class="mt-3">Salvate</h2>
+<div class="music-grid">
+	{% for playlist in saved_playlists %}
+	{% include 'partials/playlist_card.html' %}
+	{% endfor %}
+</div>
 {% endif %}
 {% endblock %}
