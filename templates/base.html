@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}BeatToBeat{% endblock %}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	{% block extra_css %}{% endblock %}
+</head>
+
+<body>
+	{% block layout %}
+	<div class="app-shell">
+		<aside class="sidebar">
+			<a class="brand" href="{% url 'pages:home' %}">Beat<span class="beat-accent">To</span>Beat</a>
+			<nav>
+				<div class="nav-section-label">Menu</div>
+				<a class="nav-item-link {% if request.path == '/' %}active{% endif %}" href="{% url 'pages:home' %}">
+					<span class="nav-icon">⌂</span> Home
+				</a>
+				{% if user.is_authenticated %}
+				<a class="nav-item-link {% if '/music/songs' in request.path %}active{% endif %}" href="{% url 'music:song_list' %}">
+					<span class="nav-icon">🎵</span> Catalogo
+				</a>
+				<a class="nav-item-link {% if '/music/playlists' in request.path %}active{% endif %}" href="{% url 'music:playlist_list' %}">
+					<span class="nav-icon">📁</span> Playlist
+				</a>
+				{% if user.is_curator %}
+				<a class="nav-item-link {% if '/music/genres' in request.path %}active{% endif %}" href="{% url 'music:genre_list' %}">
+					<span class="nav-icon">🏷️</span> Generi
+				</a>
+				{% endif %}
+				{% if user.is_superuser %}
+				<a class="nav-item-link" href="{% url 'admin:index' %}">
+					<span class="nav-icon">⚙️</span> Admin
+				</a>
+				{% endif %}
+				{% endif %}
+			</nav>
+			<div class="sidebar-footer">
+				{% if user.is_authenticated %}
+				<div class="user-box">
+					<div class="user-name">{{ user.username }}</div>
+					{% if user.is_superuser %}
+					<span class="role-badge admin">Admin</span>
+					{% elif user.role == 'curator' %}
+					<span class="role-badge curator">Curator</span>
+					{% else %}
+					<span class="role-badge listener">Listener</span>
+					{% endif %}
+				</div>
+				<form method="post" action="{% url 'accounts:logout' %}">
+					{% csrf_token %}
+					<button type="submit" class="btn btn-ghost btn-block">Esci</button>
+				</form>
+				{% else %}
+				<a class="btn btn-accent btn-block" href="{% url 'accounts:login' %}">Accedi</a>
+				<a class="btn btn-ghost btn-block mt-2" href="{% url 'accounts:signup' %}">Registrati</a>
+				{% endif %}
+			</div>
+		</aside>
+
+		<main class="content-area">
+			{% if messages %}
+			{% for message in messages %}
+			<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+			{% endfor %}
+			{% endif %}
+
+			{% block content %}{% endblock %}
+		</main>
+	</div>
+	{% endblock %}
+</body>
+
+</html>

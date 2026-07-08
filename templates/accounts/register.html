@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrati — BeatToBeat{% endblock %}
+
+{% block layout %}
+<div class="auth-wrapper">
+	<div class="auth-card">
+		<div class="auth-brand">Beat<span class="beat-accent">To</span>Beat</div>
+		<p class="auth-subtitle">Crea il tuo account</p>
+
+		<form method="post" action="{% url 'accounts:signup' %}">
+			{% csrf_token %}
+			{% include 'partials/form_fields.html' %}
+			<button type="submit" class="btn btn-accent btn-block mt-2">Registrati</button>
+		</form>
+		<p class="text-center mt-3 mb-0">
+			Hai già un account? <a href="{% url 'accounts:login' %}">Accedi</a>
+		</p>
+	</div>
+</div>
+{% endblock %}

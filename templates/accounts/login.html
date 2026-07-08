@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Accedi — BeatToBeat{% endblock %}
+
+{% block layout %}
+<div class="auth-wrapper">
+	<div class="auth-card">
+		<div class="auth-brand">Beat<span class="beat-accent">To</span>Beat</div>
+		<p class="auth-subtitle">Bentornato, accedi al tuo account</p>
+
+		{% if messages %}
+		{% for message in messages %}
+		<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+		{% endfor %}
+		{% endif %}
+
+		<form method="post" action="{% url 'accounts:login' %}">
+			{% csrf_token %}
+			{% if next %}
+			<input type="hidden" name="next" value="{{ next }}">
+			{% endif %}
+			{% include 'partials/form_fields.html' %}
+			<button type="submit" class="btn btn-accent btn-block mt-2">Accedi</button>
+		</form>
+		<p class="text-center mt-3 mb-0">
+			Non hai un account? <a href="{% url 'accounts:signup' %}">Registrati</a>
+		</p>
+	</div>
+</div>
+{% endblock %}

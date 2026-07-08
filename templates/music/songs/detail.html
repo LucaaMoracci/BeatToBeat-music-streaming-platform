@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ song.title }} — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<h1 class="page-title">{{ song.title }}</h1>
+	{% if user.is_curator %}
+	<div class="actions">
+		<a class="btn btn-ghost" href="{% url 'music:song_update' song.pk %}">Modifica</a>
+		<a class="btn btn-danger" href="{% url 'music:song_delete' song.pk %}">Elimina</a>
+	</div>
+	{% endif %}
+</div>
+
+<div class="panel detail-hero">
+	<div class="detail-cover">{{ song.title|first|upper }}</div>
+	<div>
+		<div class="card-artist">{{ song.artist }}</div>
+		<span class="genre-chip">{{ song.genre.name }}</span>
+		<p class="mt-2 mb-0"><strong>Durata:</strong> {{ song.duration }}</p>
+		<p class="text-muted mb-0">
+			Aggiunto da {{ song.added_by.username }} il {{ song.created_at|date:"d M Y" }}
+		</p>
+	</div>
+</div>
+
+{% if user_playlists %}
+<div class="panel mt-3">
+	<h3>Aggiungi a una playlist</h3>
+	<form method="post" action="{% url 'music:add_to_playlist' song.id %}" class="filter-row">
+		{% csrf_token %}
+		<select name="playlist_id">
+			{% for pl in user_playlists %}
+			<option value="{{ pl.id }}">{{ pl.name }}</option>
+			{% endfor %}
+		</select>
+		<button type="submit" class="btn btn-accent">Aggiungi</button>
+	</form>
+</div>
+{% endif %}
+
+<p class="mt-3"><a class="muted-link" href="{% url 'music:song_list' %}">← Torna al catalogo</a></p>
+{% endblock %}

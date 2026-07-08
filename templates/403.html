@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Accesso negato — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="panel form-narrow text-center">
+	<h1>403 — Accesso negato</h1>
+	<p class="text-muted">Non hai i permessi necessari per questa azione.</p>
+	<a class="btn btn-accent mt-2" href="{% url 'pages:home' %}">Torna alla home</a>
+</div>
+{% endblock %}

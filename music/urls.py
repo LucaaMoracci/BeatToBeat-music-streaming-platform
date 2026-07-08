@@ -1,0 +1,26 @@
+from django.urls import path
+
+from . import views
+
+app_name = 'music'
+
+urlpatterns = [
+    path('songs/', views.SongListView.as_view(), name='song_list'),
+    path('songs/add/', views.SongCreateView.as_view(), name='song_create'),
+    path('songs/<int:pk>/', views.SongDetailView.as_view(), name='song_detail'),
+    path('songs/<int:pk>/edit/', views.SongUpdateView.as_view(), name='song_update'),
+    path('songs/<int:pk>/delete/', views.SongDeleteView.as_view(), name='song_delete'),
+    path('songs/<int:song_id>/add-to-playlist/', views.add_song_to_playlist, name='add_to_playlist'),
+
+    path('genres/', views.GenreListView.as_view(), name='genre_list'),
+    path('genres/add/', views.GenreCreateView.as_view(), name='genre_create'),
+    path('genres/<int:pk>/edit/', views.GenreUpdateView.as_view(), name='genre_update'),
+    path('genres/<int:pk>/delete/', views.GenreDeleteView.as_view(), name='genre_delete'),
+
+    path('playlists/', views.PlaylistListView.as_view(), name='playlist_list'),
+    path('playlists/add/', views.PlaylistCreateView.as_view(), name='playlist_create'),
+    path('playlists/<int:pk>/', views.PlaylistDetailView.as_view(), name='playlist_detail'),
+    path('playlists/<int:pk>/edit/', views.PlaylistUpdateView.as_view(), name='playlist_update'),
+    path('playlists/<int:pk>/delete/', views.PlaylistDeleteView.as_view(), name='playlist_delete'),
+    path('playlists/<int:playlist_id>/remove/<int:song_id>/', views.remove_song_from_playlist, name='remove_from_playlist'),
+]

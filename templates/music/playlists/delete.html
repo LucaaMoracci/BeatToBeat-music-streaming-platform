@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Elimina playlist — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="panel form-narrow text-center">
+	<h2>Conferma eliminazione</h2>
+	<p>Vuoi davvero eliminare la playlist <strong>"{{ object.name }}"</strong>?</p>
+	<p class="text-muted">L'operazione è irreversibile.</p>
+	<form method="post">
+		{% csrf_token %}
+		<div class="actions center mt-2">
+			<button type="submit" class="btn btn-danger">Sì, elimina</button>
+			<a class="btn btn-ghost" href="{% url 'music:playlist_detail' object.pk %}">Annulla</a>
+		</div>
+	</form>
+</div>
+{% endblock %}

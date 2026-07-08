@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ playlist.name }} — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<div>
+		<h1 class="page-title">{{ playlist.name }}</h1>
+		<div class="page-subtitle">{{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}</div>
+	</div>
+	<div class="actions">
+		<a class="btn btn-ghost" href="{% url 'music:playlist_update' playlist.pk %}">Rinomina</a>
+		<a class="btn btn-danger" href="{% url 'music:playlist_delete' playlist.pk %}">Elimina</a>
+	</div>
+</div>
+
+{% if playlist.songs.all %}
+{% for song in playlist.songs.all %}
+<div class="list-row">
+	<div class="list-main">
+		<a href="{% url 'music:song_detail' song.pk %}" class="list-title">{{ song.title }}</a>
+		<div class="list-meta">{{ song.artist }} · {{ song.genre.name }} · {{ song.duration }}</div>
+	</div>
+	<form method="post" action="{% url 'music:remove_from_playlist' playlist.id song.id %}">
+		{% csrf_token %}
+		<button type="submit" class="btn btn-danger btn-sm">Rimuovi</button>
+	</form>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty">
+	Playlist vuota. Aggiungi brani dal <a href="{% url 'music:song_list' %}">catalogo</a>.
+</div>
+{% endif %}
+
+<p class="mt-3"><a class="muted-link" href="{% url 'music:playlist_list' %}">← Tutte le playlist</a></p>
+{% endblock %}

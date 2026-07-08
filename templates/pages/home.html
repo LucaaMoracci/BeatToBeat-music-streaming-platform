@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Home — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="hero-panel">
+	<h1 class="hero-title">Beat<span class="beat-accent">To</span>Beat</h1>
+	<p>Esplora il catalogo musicale, crea le tue playlist e scopri nuovi brani.</p>
+	<div class="actions center mt-3">
+		{% if user.is_authenticated %}
+		<a class="btn btn-accent" href="{% url 'music:song_list' %}">Vai al catalogo</a>
+		<a class="btn btn-ghost" href="{% url 'music:playlist_list' %}">Le mie playlist</a>
+		{% else %}
+		<a class="btn btn-accent" href="{% url 'accounts:signup' %}">Registrati</a>
+		<a class="btn btn-ghost" href="{% url 'accounts:login' %}">Accedi</a>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

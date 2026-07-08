@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Modifica genere{% else %}Nuovo genere{% endif %} — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<h1 class="page-title">{% if object %}Modifica genere{% else %}Nuovo genere{% endif %}</h1>
+</div>
+
+<div class="panel form-narrow">
+	<form method="post">
+		{% csrf_token %}
+		{% include 'partials/form_fields.html' %}
+		<div class="actions mt-2">
+			<button type="submit" class="btn btn-accent">Salva</button>
+			<a class="btn btn-ghost" href="{% url 'music:genre_list' %}">Annulla</a>
+		</div>
+	</form>
+</div>
+{% endblock %}

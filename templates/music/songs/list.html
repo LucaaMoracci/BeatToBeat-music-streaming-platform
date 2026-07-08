@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Catalogo — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<div>
+		<h1 class="page-title">Catalogo</h1>
+		<div class="page-subtitle">Cerca e ascolta i brani</div>
+	</div>
+	{% if user.is_curator %}
+	<div class="actions">
+		<a class="btn btn-ghost" href="{% url 'music:genre_list' %}">Gestisci generi</a>
+		<a class="btn btn-accent" href="{% url 'music:song_create' %}">+ Aggiungi brano</a>
+	</div>
+	{% endif %}
+</div>
+
+<form method="get" class="search-bar">
+	<div class="filter-row">
+		<input type="text" name="q" value="{{ current_q }}" placeholder="Cerca per titolo o artista...">
+		<select name="genre">
+			<option value="">Tutti i generi</option>
+			{% for g in genres %}
+			<option value="{{ g.id }}" {% if current_genre == g.id|stringformat:'s' %}selected{% endif %}>{{ g.name }}</option>
+			{% endfor %}
+		</select>
+		<div class="actions">
+			<button type="submit" class="btn btn-accent">Filtra</button>
+			<a class="btn btn-ghost" href="{% url 'music:song_list' %}">Reset</a>
+		</div>
+	</div>
+</form>
+
+{% if songs %}
+<div class="music-grid">
+	{% for song in songs %}
+	<div class="music-card">
+		<a href="{% url 'music:song_detail' song.pk %}">
+			<div class="cover-art">
+				{{ song.title|first|upper }}
+				<div class="equalizer"><span></span><span></span><span></span></div>
+			</div>
+		</a>
+		<a href="{% url 'music:song_detail' song.pk %}" class="card-title-music">{{ song.title }}</a>
+		<div class="card-artist">{{ song.artist }}</div>
+		<span class="genre-chip">{{ song.genre.name }}</span>
+		<div class="card-actions">
+			<a class="btn btn-ghost btn-sm" href="{% url 'music:song_detail' song.pk %}">Apri</a>
+			{% if user.is_curator %}
+			<a class="btn btn-ghost btn-sm" href="{% url 'music:song_update' song.pk %}">Modifica</a>
+			<a class="btn btn-danger btn-sm" href="{% url 'music:song_delete' song.pk %}">Elimina</a>
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% else %}
+<div class="empty">Nessun brano trovato.</div>
+{% endif %}
+{% endblock %}

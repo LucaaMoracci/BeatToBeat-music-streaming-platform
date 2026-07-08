@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Le mie playlist — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<h1 class="page-title">Le mie playlist</h1>
+	<a class="btn btn-accent" href="{% url 'music:playlist_create' %}">+ Nuova playlist</a>
+</div>
+
+{% if playlists %}
+<div class="music-grid">
+	{% for playlist in playlists %}
+	<div class="music-card">
+		<a href="{% url 'music:playlist_detail' playlist.pk %}">
+			<div class="cover-art">
+				{{ playlist.name|first|upper }}
+				<div class="equalizer"><span></span><span></span><span></span></div>
+			</div>
+		</a>
+		<a href="{% url 'music:playlist_detail' playlist.pk %}" class="card-title-music">{{ playlist.name }}</a>
+		<div class="card-artist">{{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}</div>
+		<div class="card-actions">
+			<a class="btn btn-ghost btn-sm btn-block" href="{% url 'music:playlist_detail' playlist.pk %}">Apri</a>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% else %}
+<div class="empty">Non hai ancora creato playlist. Inizia ora!</div>
+{% endif %}
+{% endblock %}

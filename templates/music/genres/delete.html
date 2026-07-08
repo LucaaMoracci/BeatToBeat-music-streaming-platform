@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Elimina genere — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="panel form-narrow text-center">
+	<h2>Conferma eliminazione</h2>
+	<p>Vuoi davvero eliminare il genere <strong>"{{ object.name }}"</strong>?</p>
+	<div class="alert alert-warning">
+		Un genere con brani associati non può essere eliminato.
+	</div>
+	<form method="post">
+		{% csrf_token %}
+		<div class="actions center mt-2">
+			<button type="submit" class="btn btn-danger">Sì, elimina</button>
+			<a class="btn btn-ghost" href="{% url 'music:genre_list' %}">Annulla</a>
+		</div>
+	</form>
+</div>
+{% endblock %}

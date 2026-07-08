@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Elimina brano — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="panel form-narrow text-center">
+	<h2>Conferma eliminazione</h2>
+	<p>Vuoi davvero eliminare <strong>"{{ object }}"</strong>?</p>
+	<form method="post">
+		{% csrf_token %}
+		<div class="actions center mt-2">
+			<button type="submit" class="btn btn-danger">Sì, elimina</button>
+			<a class="btn btn-ghost" href="{% url 'music:song_list' %}">Annulla</a>
+		</div>
+	</form>
+</div>
+{% endblock %}
