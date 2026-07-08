@@ -16,5 +16,6 @@ staticfiles/
 .DS_Store
 .idea/
 .vscode/
+.claude/
 
 # Nota: db.sqlite3 è volutamente committato (dati demo richiesti dal progetto).
