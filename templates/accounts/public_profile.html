@@ -21,9 +21,9 @@
 	</div>
 </div>
 
-<h2 class="mt-3">Playlist pubbliche</h2>
+<h2 class="section-head">Playlist pubbliche</h2>
 {% if public_playlists %}
-<div class="music-grid">
+<div class="carousel">
 	{% for playlist in public_playlists %}
 	{% include 'partials/playlist_card.html' %}
 	{% endfor %}
@@ -32,7 +32,7 @@
 <div class="empty">Nessuna playlist pubblica.</div>
 {% endif %}
 
-<h2 class="mt-3">Commenti recenti</h2>
+<h2 class="section-head">Commenti recenti</h2>
 {% if recent_comments %}
 {% for comment in recent_comments %}
 <div class="list-row">

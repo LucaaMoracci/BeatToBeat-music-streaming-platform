@@ -3,42 +3,30 @@
 {% block title %}Home — BeatToBeat{% endblock %}
 
 {% block content %}
-<div class="hero-panel">
-	<h1 class="hero-title">Beat<span class="beat-accent">To</span>Beat</h1>
-	<p>Esplora il catalogo musicale, crea le tue playlist e scopri nuovi brani.</p>
-	<div class="actions center mt-3">
-		{% if user.is_authenticated %}
-		<a class="btn btn-accent" href="{% url 'music:song_list' %}">Vai al catalogo</a>
-		<a class="btn btn-ghost" href="{% url 'music:playlist_list' %}">Le mie playlist</a>
-		{% else %}
-		<a class="btn btn-accent" href="{% url 'accounts:signup' %}">Registrati</a>
-		<a class="btn btn-ghost" href="{% url 'accounts:login' %}">Accedi</a>
-		{% endif %}
-	</div>
+<div class="page-header">
+	<h1 class="page-title">Ciao, {{ user.username }}</h1>
 </div>
 
-{% if user.is_authenticated %}
 {% if genre_songs %}
-<h2 class="mt-3">Per il tuo genere: {{ favorite_genre.name }}</h2>
-<div class="music-grid">
+<h2 class="section-head">🎧 Per il tuo genere: {{ favorite_genre.name }}</h2>
+<div class="carousel">
 	{% for song in genre_songs %}
 	{% include 'partials/song_card.html' %}
 	{% endfor %}
 </div>
 {% endif %}
 
-<h2 class="mt-3">Novità</h2>
-<div class="music-grid">
+<h2 class="section-head">✨ Novità</h2>
+<div class="carousel">
 	{% for song in latest_songs %}
 	{% include 'partials/song_card.html' %}
 	{% endfor %}
 </div>
 
-<h2 class="mt-3">I più piaciuti</h2>
-<div class="music-grid">
+<h2 class="section-head">🔥 I più piaciuti</h2>
+<div class="carousel">
 	{% for song in popular_songs %}
 	{% include 'partials/song_card.html' %}
 	{% endfor %}
 </div>
-{% endif %}
 {% endblock %}

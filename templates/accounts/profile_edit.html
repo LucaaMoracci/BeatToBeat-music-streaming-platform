@@ -3,18 +3,18 @@
 {% block title %}Modifica profilo — BeatToBeat{% endblock %}
 
 {% block content %}
-<div class="page-header">
-	<h1 class="page-title">Modifica profilo</h1>
-</div>
-
-<div class="panel form-narrow">
-	<form method="post">
-		{% csrf_token %}
-		{% include 'partials/form_fields.html' %}
-		<div class="actions mt-2">
-			<button type="submit" class="btn btn-accent">Salva</button>
-			<a class="btn btn-ghost" href="{% url 'accounts:profile' %}">Annulla</a>
-		</div>
-	</form>
+<div class="form-page">
+	<div class="panel form-card">
+		<h1 class="form-card-title">Modifica profilo</h1>
+		<p class="form-card-sub">Aggiorna bio, data di nascita e genere preferito</p>
+		<form method="post">
+			{% csrf_token %}
+			{% include 'partials/form_fields.html' %}
+			<div class="actions center mt-3">
+				<button type="submit" class="btn btn-accent">Salva</button>
+				<a class="btn btn-ghost" href="{% url 'accounts:profile' %}">Annulla</a>
+			</div>
+		</form>
+	</div>
 </div>
 {% endblock %}

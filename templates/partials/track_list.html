@@ -1,0 +1,39 @@
+<div class="track-list">
+	{% for song in songs %}
+	<div class="track-row">
+		<div class="track-idx">
+			<span class="track-num">{{ forloop.counter }}</span>
+			{% if song.audio_file %}
+			<button type="button" class="track-play play-btn" data-id="{{ song.pk }}" data-src="{{ song.audio_file.url }}" data-title="{{ song.title }}" data-artist="{{ song.artist }}" aria-label="Riproduci">
+				<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+			</button>
+			{% endif %}
+		</div>
+		<div class="track-title-cell">
+			<div class="track-thumb"></div>
+			<div class="track-titles">
+				<a href="{% url 'music:song_detail' song.pk %}" class="track-name">{{ song.title }}</a>
+				<div class="track-sub">{{ song.artist }}</div>
+			</div>
+		</div>
+		<div class="track-genre">{{ song.genre.name }}</div>
+		<div class="track-plays">{{ song.play_count }}</div>
+		<div class="track-end">
+			{% include 'partials/like_button.html' %}
+			<span class="track-dur">{{ song.duration }}</span>
+			{% if remove_playlist and remove_playlist.owner == user %}
+			<form method="post" action="{% url 'music:remove_from_playlist' remove_playlist.id song.id %}" class="track-curator">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger btn-sm">Rimuovi</button>
+			</form>
+			{% endif %}
+			{% if curator_actions and user.is_curator %}
+			<div class="track-curator">
+				<a class="btn btn-ghost btn-sm" href="{% url 'music:song_update' song.pk %}">Modifica</a>
+				<a class="btn btn-danger btn-sm" href="{% url 'music:song_delete' song.pk %}">Elimina</a>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+</div>

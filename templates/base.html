@@ -5,10 +5,11 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="csrf-token" content="{{ csrf_token }}">
 	<title>{% block title %}BeatToBeat{% endblock %}</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	{% block extra_css %}{% endblock %}
 </head>
@@ -17,30 +18,35 @@
 	{% block layout %}
 	<div class="app-shell">
 		<aside class="sidebar">
-			<a class="brand" href="{% url 'pages:home' %}">Beat<span class="beat-accent">To</span>Beat</a>
+			<a class="brand" href="{% url 'pages:home' %}">{% include 'partials/logo.html' %}<span>Beat<span class="beat-accent">To</span>Beat</span></a>
 			<nav>
 				<div class="nav-section-label">Menu</div>
 				<a class="nav-item-link {% if request.path == '/' %}active{% endif %}" href="{% url 'pages:home' %}">
-					<span class="nav-icon">⌂</span> Home
+					<span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span class="nav-label">Home</span>
 				</a>
 				{% if user.is_authenticated %}
 				<a class="nav-item-link {% if '/music/songs' in request.path %}active{% endif %}" href="{% url 'music:song_list' %}">
-					<span class="nav-icon">🎵</span> Catalogo
+					<span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="nav-label">Catalogo</span>
 				</a>
 				<a class="nav-item-link {% if '/music/playlists' in request.path %}active{% endif %}" href="{% url 'music:playlist_list' %}">
-					<span class="nav-icon">📁</span> Playlist
+					<span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span class="nav-label">Playlist</span>
 				</a>
 				<a class="nav-item-link {% if '/accounts/profile' in request.path %}active{% endif %}" href="{% url 'accounts:profile' %}">
-					<span class="nav-icon">👤</span> Profilo
+					<span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="nav-label">Profilo</span>
 				</a>
 				{% if user.is_curator %}
 				<a class="nav-item-link {% if '/music/genres' in request.path %}active{% endif %}" href="{% url 'music:genre_list' %}">
-					<span class="nav-icon">🏷️</span> Generi
+					<span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span><span class="nav-label">Generi</span>
+				</a>
+				{% endif %}
+				{% if user.is_moderator %}
+				<a class="nav-item-link {% if '/music/moderation' in request.path %}active{% endif %}" href="{% url 'music:moderation_log' %}">
+					<span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="nav-label">Moderazione</span>
 				</a>
 				{% endif %}
 				{% if user.is_superuser %}
 				<a class="nav-item-link" href="{% url 'admin:index' %}">
-					<span class="nav-icon">⚙️</span> Admin
+					<span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">Admin</span>
 				</a>
 				{% endif %}
 				{% endif %}
@@ -51,15 +57,15 @@
 					{% include 'partials/avatar.html' with profile_user=user %}
 					<div>
 						<div class="user-name">{{ user.username }}</div>
-					{% if user.is_superuser %}
-					<span class="role-badge admin">Admin</span>
-					{% elif user.role == 'curator' %}
-					<span class="role-badge curator">Curator</span>
-					{% elif user.role == 'moderator' %}
-					<span class="role-badge moderator">Moderator</span>
-					{% else %}
-					<span class="role-badge listener">Listener</span>
-					{% endif %}
+						{% if user.is_superuser %}
+						<span class="role-badge admin">Admin</span>
+						{% elif user.role == 'curator' %}
+						<span class="role-badge curator">Curator</span>
+						{% elif user.role == 'moderator' %}
+						<span class="role-badge moderator">Moderator</span>
+						{% else %}
+						<span class="role-badge listener">Listener</span>
+						{% endif %}
 					</div>
 				</div>
 				<form method="post" action="{% url 'accounts:logout' %}">
@@ -83,7 +89,12 @@
 			{% block content %}{% endblock %}
 		</main>
 	</div>
+	{% include 'partials/player.html' %}
 	{% endblock %}
+
+	<script src="{% static 'js/player.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	{% block extra_js %}{% endblock %}
 </body>
 
 </html>

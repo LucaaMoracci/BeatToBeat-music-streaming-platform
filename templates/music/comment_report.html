@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Rimuovi commento — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="form-page">
+	<div class="panel form-card">
+		<h1 class="form-card-title">Rimuovi commento</h1>
+		<p class="form-card-sub">Indica la motivazione: verrà salvata in un report</p>
+
+		<div class="report-quote">
+			<div class="report-quote-author">@{{ comment.author.username }}</div>
+			<div class="report-quote-text">{{ comment.text }}</div>
+		</div>
+
+		<form method="post">
+			{% csrf_token %}
+			{% include 'partials/form_fields.html' %}
+			<div class="actions center mt-3">
+				<button type="submit" class="btn btn-danger">Rimuovi e registra</button>
+				<a class="btn btn-ghost" href="{% url 'music:song_detail' comment.song.pk %}">Annulla</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

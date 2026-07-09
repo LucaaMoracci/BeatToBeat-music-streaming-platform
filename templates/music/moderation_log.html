@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Moderazione — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<div>
+		<h1 class="page-title">Moderazione</h1>
+		<div class="page-subtitle">Storico dei commenti rimossi e delle motivazioni</div>
+	</div>
+</div>
+
+{% if reports %}
+{% for report in reports %}
+<div class="list-row">
+	<div class="list-main">
+		<div class="list-title">"{{ report.comment_text|truncatechars:90 }}"</div>
+		<div class="list-meta">
+			di @{{ report.comment_author.username|default:"utente eliminato" }}
+			{% if report.song %} · su {{ report.song.title }}{% endif %}
+			· rimosso da @{{ report.moderator.username|default:"—" }}
+			· {{ report.created_at|date:"d M Y, H:i" }}
+		</div>
+		<div class="report-reason"><strong>Motivo:</strong> {{ report.reason }}</div>
+	</div>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty">Nessun report: nessun commento è stato ancora rimosso.</div>
+{% endif %}
+{% endblock %}

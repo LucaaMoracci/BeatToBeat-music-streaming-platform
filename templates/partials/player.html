@@ -1,0 +1,21 @@
+<div id="player" class="player">
+	<div class="player-info">
+		<div class="player-cover" id="player-cover"></div>
+		<div class="player-meta">
+			<div class="player-title" id="player-title"></div>
+			<div class="player-artist" id="player-artist"></div>
+		</div>
+	</div>
+	<div class="player-center">
+		<button class="player-btn" id="player-toggle" type="button" aria-label="Play o pausa"></button>
+		<div class="player-seek">
+			<span class="player-time" id="player-current">0:00</span>
+			<div class="player-progress" id="player-progress"><div class="player-fill" id="player-fill"></div></div>
+			<span class="player-time" id="player-duration">0:00</span>
+		</div>
+	</div>
+	<button class="player-close" id="player-close" type="button" aria-label="Chiudi">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+	</button>
+	<audio id="player-audio" preload="metadata"></audio>
+</div>

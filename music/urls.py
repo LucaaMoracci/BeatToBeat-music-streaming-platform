@@ -11,10 +11,12 @@ urlpatterns = [
     path('songs/<int:pk>/edit/', views.SongUpdateView.as_view(), name='song_update'),
     path('songs/<int:pk>/delete/', views.SongDeleteView.as_view(), name='song_delete'),
     path('songs/<int:pk>/like/', views.toggle_like_song, name='toggle_like_song'),
+    path('songs/<int:pk>/played/', views.register_play, name='register_play'),
     path('songs/<int:song_id>/add-to-playlist/', views.add_song_to_playlist, name='add_to_playlist'),
 
     path('songs/<int:pk>/comment/', views.add_comment, name='add_comment'),
     path('comments/<int:pk>/delete/', views.delete_comment, name='delete_comment'),
+    path('moderation/', views.moderation_log, name='moderation_log'),
     path('comments/<int:pk>/like/', views.toggle_like_comment, name='toggle_like_comment'),
 
     path('genres/', views.GenreListView.as_view(), name='genre_list'),
@@ -29,4 +31,5 @@ urlpatterns = [
     path('playlists/<int:pk>/delete/', views.PlaylistDeleteView.as_view(), name='playlist_delete'),
     path('playlists/<int:playlist_id>/remove/<int:song_id>/', views.remove_song_from_playlist, name='remove_from_playlist'),
     path('playlists/<int:pk>/save/', views.toggle_save_playlist, name='toggle_save_playlist'),
+    path('playlists/<int:pk>/add-song/', views.playlist_add_song, name='playlist_add_song'),
 ]

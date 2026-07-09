@@ -8,7 +8,7 @@ django.setup()
 
 from django.contrib.auth import get_user_model
 
-from music.models import Comment, Genre, Playlist, Song
+from music.models import Comment, Genre, ModerationReport, Playlist, Song
 
 User = get_user_model()
 
@@ -108,10 +108,21 @@ def seed():
     songs['Billie Jean'].likes.set([users['listener_demo'], users['alice']])
     songs['Lose Yourself'].likes.set([users['bob']])
 
+    for title, count in [('Bohemian Rhapsody', 128), ('Billie Jean', 94), ('Take Five', 61), ('Lose Yourself', 47), ('Stairway to Heaven', 39), ('Shape of You', 25)]:
+        Song.objects.filter(pk=songs[title].pk).update(play_count=count)
+
     c1, _ = Comment.objects.get_or_create(song=songs['Bohemian Rhapsody'], author=users['alice'], text='Un capolavoro senza tempo.')
     c1.likes.set([users['bob'], users['listener_demo']])
     Comment.objects.get_or_create(song=songs['Bohemian Rhapsody'], author=users['bob'], text='La sezione operistica è pazzesca!')
     Comment.objects.get_or_create(song=songs['Billie Jean'], author=users['listener_demo'], text='Il basso più famoso della storia.')
+
+    ModerationReport.objects.get_or_create(
+        moderator=users['moderator_demo'],
+        comment_author=users['bob'],
+        song=songs['Bohemian Rhapsody'],
+        comment_text='Compra follower a poco prezzo su spam-link.xyz!',
+        defaults={'reason': 'Spam: link promozionale non consentito.'},
+    )
 
     print(f'Dati creati: {len(users)} utenti, {len(genres)} generi, {len(songs)} brani, {Playlist.objects.count()} playlist.')
 

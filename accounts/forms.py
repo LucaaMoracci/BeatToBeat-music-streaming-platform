@@ -9,6 +9,16 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ('username', 'email')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].label = 'Nome utente'
+        self.fields['username'].help_text = ''
+        self.fields['email'].label = 'Email'
+        self.fields['password1'].label = 'Password'
+        self.fields['password1'].help_text = ''
+        self.fields['password2'].label = 'Conferma password'
+        self.fields['password2'].help_text = 'Inserisci di nuovo la stessa password, per verifica.'
+
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:

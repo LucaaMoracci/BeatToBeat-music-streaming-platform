@@ -1,6 +1,19 @@
 from django import forms
 
-from .models import Comment, Song, Genre, Playlist
+from .models import Comment, ModerationReport, Song, Genre, Playlist
+
+
+class ModerationReportForm(forms.ModelForm):
+    class Meta:
+        model = ModerationReport
+        fields = ['reason']
+        labels = {'reason': 'Motivazione'}
+        widgets = {
+            'reason': forms.Textarea(attrs={
+                'rows': 4,
+                'placeholder': 'Spiega perché rimuovi questo commento...',
+            }),
+        }
 
 
 class CommentForm(forms.ModelForm):

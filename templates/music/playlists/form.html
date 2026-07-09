@@ -3,18 +3,18 @@
 {% block title %}{% if object %}Modifica playlist{% else %}Nuova playlist{% endif %} — BeatToBeat{% endblock %}
 
 {% block content %}
-<div class="page-header">
-	<h1 class="page-title">{% if object %}Modifica playlist{% else %}Nuova playlist{% endif %}</h1>
-</div>
-
-<div class="panel form-narrow">
-	<form method="post">
-		{% csrf_token %}
-		{% include 'partials/form_fields.html' %}
-		<div class="actions mt-2">
-			<button type="submit" class="btn btn-accent">Salva</button>
-			<a class="btn btn-ghost" href="{% url 'music:playlist_list' %}">Annulla</a>
-		</div>
-	</form>
+<div class="form-page">
+	<div class="panel form-card">
+		<h1 class="form-card-title">{% if object %}Modifica playlist{% else %}Nuova playlist{% endif %}</h1>
+		<p class="form-card-sub">Dai un nome e scegli la visibilità</p>
+		<form method="post">
+			{% csrf_token %}
+			{% include 'partials/form_fields.html' %}
+			<div class="actions center mt-3">
+				<button type="submit" class="btn btn-accent">Salva</button>
+				<a class="btn btn-ghost" href="{% url 'music:playlist_list' %}">Annulla</a>
+			</div>
+		</form>
+	</div>
 </div>
 {% endblock %}

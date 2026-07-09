@@ -1,20 +1,24 @@
 <div class="music-card">
-	<a href="{% url 'music:song_detail' song.pk %}">
-		<div class="cover-art">
-			{{ song.title|first|upper }}
-			<div class="equalizer"><span></span><span></span><span></span></div>
-		</div>
-	</a>
-	<a href="{% url 'music:song_detail' song.pk %}" class="card-title-music">{{ song.title }}</a>
-	<div class="card-artist">{{ song.artist }}</div>
-	<span class="genre-chip">{{ song.genre.name }}</span>
-	{% if song.audio_file %}<span class="genre-chip">♪ Audio</span>{% endif %}
-	<div class="mt-2">{% include 'partials/like_button.html' %}</div>
-	<div class="card-actions">
-		<a class="btn btn-ghost btn-sm" href="{% url 'music:song_detail' song.pk %}">Apri</a>
-		{% if user.is_curator %}
-		<a class="btn btn-ghost btn-sm" href="{% url 'music:song_update' song.pk %}">Modifica</a>
-		<a class="btn btn-danger btn-sm" href="{% url 'music:song_delete' song.pk %}">Elimina</a>
+	<div class="cover-art">
+		<div class="equalizer"><span></span><span></span><span></span></div>
+		<div class="cover-like">{% include 'partials/like_button.html' %}</div>
+		{% if song.audio_file %}
+		<button type="button" class="play-overlay play-btn" data-id="{{ song.pk }}" data-src="{{ song.audio_file.url }}" data-title="{{ song.title }}" data-artist="{{ song.artist }}" aria-label="Riproduci">
+			<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+		</button>
 		{% endif %}
 	</div>
+	<a href="{% url 'music:song_detail' song.pk %}" class="card-title-music">{{ song.title }}</a>
+	<div class="card-artist">{{ song.artist }}</div>
+	<div class="card-chips">
+		<span class="genre-chip">{{ song.genre.name }}</span>
+		{% if song.audio_file %}<span class="genre-chip">♪ Audio</span>{% endif %}
+	</div>
+	<div class="card-meta">{{ song.duration }} · {{ song.play_count }} ascolt{{ song.play_count|pluralize:"o,i" }}</div>
+	{% if user.is_curator %}
+	<div class="card-actions">
+		<a class="btn btn-ghost btn-sm" href="{% url 'music:song_update' song.pk %}">Modifica</a>
+		<a class="btn btn-danger btn-sm" href="{% url 'music:song_delete' song.pk %}">Elimina</a>
+	</div>
+	{% endif %}
 </div>

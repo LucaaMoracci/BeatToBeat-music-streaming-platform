@@ -43,6 +43,7 @@ class Song(models.Model):
         related_name='liked_songs',
         blank=True,
     )
+    play_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -97,3 +98,30 @@ class Playlist(models.Model):
 
     def get_absolute_url(self):
         return reverse('music:playlist_detail', kwargs={'pk': self.pk})
+
+
+class ModerationReport(models.Model):
+    """Registro di un commento rimosso da un moderatore, con la motivazione."""
+    moderator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='moderation_reports',
+    )
+    comment_author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reported_comments',
+    )
+    song = models.ForeignKey(Song, on_delete=models.SET_NULL, null=True, blank=True)
+    comment_text = models.TextField()
+    reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Report di {self.moderator} il {self.created_at:%d/%m/%Y}'

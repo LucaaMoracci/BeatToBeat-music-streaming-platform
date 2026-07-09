@@ -36,11 +36,7 @@
 </form>
 
 {% if songs %}
-<div class="music-grid">
-	{% for song in songs %}
-	{% include 'partials/song_card.html' %}
-	{% endfor %}
-</div>
+{% include 'partials/track_list.html' with curator_actions=True %}
 {% else %}
 <div class="empty">Nessun brano trovato.</div>
 {% endif %}

@@ -14,7 +14,7 @@
 </div>
 
 <div class="panel detail-hero">
-	<div class="detail-cover">{{ song.title|first|upper }}</div>
+	<div class="detail-cover"></div>
 	<div>
 		<div class="card-artist">{{ song.artist }}</div>
 		<span class="genre-chip">{{ song.genre.name }}</span>
@@ -22,13 +22,22 @@
 		<p class="text-muted mb-2">
 			Aggiunto da {{ song.added_by.username }} il {{ song.created_at|date:"d M Y" }}
 		</p>
-		{% include 'partials/like_button.html' %}
+		<form method="post" action="{% url 'music:toggle_like_song' song.pk %}" class="like-form like-detail">
+			{% csrf_token %}
+			<button type="submit" class="like-btn {% if user in song.likes.all %}liked{% endif %}" title="Mi piace">
+				<svg class="heart-icon heart-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+				<svg class="heart-icon heart-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+			</button>
+			<span class="like-label">Piaciuto da <span class="like-count">{{ song.likes.count }}</span></span>
+		</form>
 	</div>
 </div>
 
 {% if song.audio_file %}
-<div class="panel mt-3">
-	<audio controls src="{{ song.audio_file.url }}" class="audio-player"></audio>
+<div class="mt-3">
+	<button type="button" class="btn btn-accent play-btn" data-id="{{ song.pk }}" data-src="{{ song.audio_file.url }}" data-title="{{ song.title }}" data-artist="{{ song.artist }}">
+		<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Riproduci
+	</button>
 </div>
 {% endif %}
 
@@ -69,15 +78,14 @@
 		<div class="comment-actions">
 			<form method="post" action="{% url 'music:toggle_like_comment' comment.pk %}" class="like-form">
 				{% csrf_token %}
-				<button type="submit" class="like-btn" title="Mi piace">
-					<span class="heart">{% if user in comment.likes.all %}♥{% else %}♡{% endif %}</span> {{ comment.likes.count }}
+				<button type="submit" class="like-btn {% if user in comment.likes.all %}liked{% endif %}" title="Mi piace">
+					<svg class="heart-icon heart-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+					<svg class="heart-icon heart-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+					<span class="like-count">{{ comment.likes.count }}</span>
 				</button>
 			</form>
 			{% if user.is_moderator %}
-			<form method="post" action="{% url 'music:delete_comment' comment.pk %}">
-				{% csrf_token %}
-				<button type="submit" class="btn btn-danger btn-sm">Elimina</button>
-			</form>
+			<a class="btn btn-danger btn-sm" href="{% url 'music:delete_comment' comment.pk %}">Elimina</a>
 			{% endif %}
 		</div>
 	</div>

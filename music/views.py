@@ -2,14 +2,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import ProtectedError, Q
-from django.shortcuts import get_object_or_404, redirect
+from django.db.models import F, ProtectedError, Q
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import CommentForm, GenreForm, PlaylistForm, SongForm
-from .models import Comment, Genre, Playlist, Song
+from .forms import CommentForm, GenreForm, ModerationReportForm, PlaylistForm, SongForm
+from .models import Comment, Genre, ModerationReport, Playlist, Song
 from .permissions import CuratorOnlyMixin
 
 
@@ -132,10 +133,16 @@ class PlaylistDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'playlist'
 
     def get_queryset(self):
-        # L'owner vede sempre la propria; le altre solo se pubbliche o editoriali.
+        # L'owner vede sempre la propria, le altre solo se pubbliche o editoriali.
         return Playlist.objects.filter(
             Q(owner=self.request.user) | Q(is_public=True) | Q(is_editorial=True)
         ).distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.object.owner == self.request.user:
+            context['available_songs'] = Song.objects.exclude(playlists=self.object)
+        return context
 
 
 class PlaylistCreateView(LoginRequiredMixin, CreateView):
@@ -179,12 +186,24 @@ class PlaylistDeleteView(LoginRequiredMixin, DeleteView):
 @login_required
 def toggle_like_song(request, pk):
     song = get_object_or_404(Song, pk=pk)
+    liked = request.user in song.likes.all()
     if request.method == 'POST':
-        if request.user in song.likes.all():
+        if liked:
             song.likes.remove(request.user)
+            liked = False
         else:
             song.likes.add(request.user)
+            liked = True
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'liked': liked, 'count': song.likes.count()})
     return redirect(request.META.get('HTTP_REFERER') or song.get_absolute_url())
+
+
+@login_required
+def register_play(request, pk):
+    if request.method == 'POST':
+        Song.objects.filter(pk=pk).update(play_count=F('play_count') + 1)
+    return HttpResponse(status=204)
 
 
 @login_required
@@ -205,20 +224,45 @@ def delete_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     if not request.user.is_moderator:
         raise PermissionDenied
-    song_pk = comment.song.pk
     if request.method == 'POST':
-        comment.delete()
-    return redirect('music:song_detail', pk=song_pk)
+        form = ModerationReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.moderator = request.user
+            report.comment_author = comment.author
+            report.song = comment.song
+            report.comment_text = comment.text
+            report.save()
+            song_pk = comment.song.pk
+            comment.delete()
+            messages.success(request, "Commento rimosso e report registrato.")
+            return redirect('music:song_detail', pk=song_pk)
+    else:
+        form = ModerationReportForm()
+    return render(request, 'music/comment_report.html', {'comment': comment, 'form': form})
+
+
+@login_required
+def moderation_log(request):
+    if not request.user.is_moderator:
+        raise PermissionDenied
+    reports = ModerationReport.objects.select_related('moderator', 'comment_author', 'song')
+    return render(request, 'music/moderation_log.html', {'reports': reports})
 
 
 @login_required
 def toggle_like_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
+    liked = request.user in comment.likes.all()
     if request.method == 'POST':
-        if request.user in comment.likes.all():
+        if liked:
             comment.likes.remove(request.user)
+            liked = False
         else:
             comment.likes.add(request.user)
+            liked = True
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'liked': liked, 'count': comment.likes.count()})
     return redirect(request.META.get('HTTP_REFERER') or comment.song.get_absolute_url())
 
 
@@ -246,6 +290,19 @@ def remove_song_from_playlist(request, playlist_id, song_id):
         playlist.songs.remove(song)
         messages.info(request, f"'{song.title}' rimosso da {playlist.name}.")
     return redirect('music:playlist_detail', pk=playlist.id)
+
+
+@login_required
+def playlist_add_song(request, pk):
+    playlist = get_object_or_404(Playlist, pk=pk, owner=request.user)
+    if request.method == 'POST':
+        song = get_object_or_404(Song, pk=request.POST.get('song_id'))
+        if playlist.songs.filter(id=song.id).exists():
+            messages.info(request, f"'{song.title}' è già in {playlist.name}.")
+        else:
+            playlist.songs.add(song)
+            messages.success(request, f"'{song.title}' aggiunto a {playlist.name}.")
+    return redirect('music:playlist_detail', pk=playlist.pk)
 
 
 @login_required
