@@ -61,6 +61,15 @@ def seed():
         )
         genres[name] = genre
 
+    users['listener_demo'].bio = 'Ascolto un po\' di tutto, ma il rock resta il mio preferito.'
+    users['listener_demo'].favorite_genre = genres['Rock']
+    users['listener_demo'].save()
+    users['alice'].bio = 'Fan sfegatata del rock classico.'
+    users['alice'].favorite_genre = genres['Rock']
+    users['alice'].save()
+    users['bob'].favorite_genre = genres['Hip Hop']
+    users['bob'].save()
+
     curator = users['curator_demo']
     songs = {}
     for title, artist, genre_name, (minutes, seconds) in SONGS:
@@ -74,6 +83,10 @@ def seed():
             },
         )
         songs[title] = song
+
+    for title in ('Bohemian Rhapsody', 'Billie Jean', 'Take Five'):
+        songs[title].audio_file = 'songs/demo_tone.wav'
+        songs[title].save()
 
     mix, _ = Playlist.objects.get_or_create(name='Il mio mix', owner=users['listener_demo'])
     mix.songs.set([songs['Bohemian Rhapsody'], songs['Billie Jean'], songs['Lose Yourself']])

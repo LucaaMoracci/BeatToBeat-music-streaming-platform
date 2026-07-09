@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 
@@ -31,6 +32,12 @@ class Song(models.Model):
         related_name='added_songs',
     )
     duration = models.DurationField()
+    audio_file = models.FileField(
+        upload_to='songs/',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav', 'ogg', 'm4a'])],
+    )
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='liked_songs',

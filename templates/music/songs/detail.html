@@ -26,6 +26,12 @@
 	</div>
 </div>
 
+{% if song.audio_file %}
+<div class="panel mt-3">
+	<audio controls src="{{ song.audio_file.url }}" class="audio-player"></audio>
+</div>
+{% endif %}
+
 {% if user_playlists %}
 <div class="panel mt-3">
 	<h3>Aggiungi a una playlist</h3>
@@ -52,7 +58,8 @@
 	{% for comment in song.comments.all %}
 	<div class="comment">
 		<div class="comment-head">
-			<span class="comment-author">@{{ comment.author.username }}</span>
+			{% include 'partials/avatar.html' with profile_user=comment.author size='avatar-sm' %}
+			<a href="{% url 'accounts:public_profile' comment.author.username %}" class="comment-author">@{{ comment.author.username }}</a>
 			{% if comment.author.is_superuser %}<span class="role-badge admin">Admin</span>
 			{% elif comment.author.role == 'moderator' %}<span class="role-badge moderator">Moderator</span>
 			{% elif comment.author.role == 'curator' %}<span class="role-badge curator">Curator</span>{% endif %}

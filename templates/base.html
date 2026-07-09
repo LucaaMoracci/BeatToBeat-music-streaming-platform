@@ -8,7 +8,7 @@
 	<title>{% block title %}BeatToBeat{% endblock %}</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	{% block extra_css %}{% endblock %}
 </head>
@@ -30,6 +30,9 @@
 				<a class="nav-item-link {% if '/music/playlists' in request.path %}active{% endif %}" href="{% url 'music:playlist_list' %}">
 					<span class="nav-icon">📁</span> Playlist
 				</a>
+				<a class="nav-item-link {% if '/accounts/profile' in request.path %}active{% endif %}" href="{% url 'accounts:profile' %}">
+					<span class="nav-icon">👤</span> Profilo
+				</a>
 				{% if user.is_curator %}
 				<a class="nav-item-link {% if '/music/genres' in request.path %}active{% endif %}" href="{% url 'music:genre_list' %}">
 					<span class="nav-icon">🏷️</span> Generi
@@ -45,7 +48,9 @@
 			<div class="sidebar-footer">
 				{% if user.is_authenticated %}
 				<div class="user-box">
-					<div class="user-name">{{ user.username }}</div>
+					{% include 'partials/avatar.html' with profile_user=user %}
+					<div>
+						<div class="user-name">{{ user.username }}</div>
 					{% if user.is_superuser %}
 					<span class="role-badge admin">Admin</span>
 					{% elif user.role == 'curator' %}
@@ -55,6 +60,7 @@
 					{% else %}
 					<span class="role-badge listener">Listener</span>
 					{% endif %}
+					</div>
 				</div>
 				<form method="post" action="{% url 'accounts:logout' %}">
 					{% csrf_token %}

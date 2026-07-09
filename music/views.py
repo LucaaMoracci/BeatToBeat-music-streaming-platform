@@ -22,11 +22,14 @@ class SongListView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset().select_related('genre')
         query = self.request.GET.get('q', '').strip()
         genre_id = self.request.GET.get('genre', '')
+        has_audio = self.request.GET.get('has_audio')
 
         if query:
             queryset = queryset.filter(Q(title__icontains=query) | Q(artist__icontains=query))
         if genre_id:
             queryset = queryset.filter(genre_id=genre_id)
+        if has_audio:
+            queryset = queryset.exclude(audio_file='').exclude(audio_file__isnull=True)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -34,6 +37,7 @@ class SongListView(LoginRequiredMixin, ListView):
         context['genres'] = Genre.objects.all()
         context['current_q'] = self.request.GET.get('q', '')
         context['current_genre'] = self.request.GET.get('genre', '')
+        context['current_has_audio'] = self.request.GET.get('has_audio')
         return context
 
 

@@ -16,7 +16,7 @@ class CommentForm(forms.ModelForm):
 class SongForm(forms.ModelForm):
     class Meta:
         model = Song
-        fields = ['title', 'artist', 'genre', 'duration']
+        fields = ['title', 'artist', 'genre', 'duration', 'audio_file']
         help_texts = {
             'duration': 'Formato hh:mm:ss (es. 0:03:30).',
         }

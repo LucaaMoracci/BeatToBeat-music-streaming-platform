@@ -25,6 +25,9 @@
 			<option value="{{ g.id }}" {% if current_genre == g.id|stringformat:'s' %}selected{% endif %}>{{ g.name }}</option>
 			{% endfor %}
 		</select>
+		<label class="audio-check">
+			<input type="checkbox" name="has_audio" value="1" {% if current_has_audio %}checked{% endif %}> Con audio
+		</label>
 		<div class="actions">
 			<button type="submit" class="btn btn-accent">Filtra</button>
 			<a class="btn btn-ghost" href="{% url 'music:song_list' %}">Reset</a>
@@ -35,25 +38,7 @@
 {% if songs %}
 <div class="music-grid">
 	{% for song in songs %}
-	<div class="music-card">
-		<a href="{% url 'music:song_detail' song.pk %}">
-			<div class="cover-art">
-				{{ song.title|first|upper }}
-				<div class="equalizer"><span></span><span></span><span></span></div>
-			</div>
-		</a>
-		<a href="{% url 'music:song_detail' song.pk %}" class="card-title-music">{{ song.title }}</a>
-		<div class="card-artist">{{ song.artist }}</div>
-		<span class="genre-chip">{{ song.genre.name }}</span>
-		<div class="mt-2">{% include 'partials/like_button.html' %}</div>
-		<div class="card-actions">
-			<a class="btn btn-ghost btn-sm" href="{% url 'music:song_detail' song.pk %}">Apri</a>
-			{% if user.is_curator %}
-			<a class="btn btn-ghost btn-sm" href="{% url 'music:song_update' song.pk %}">Modifica</a>
-			<a class="btn btn-danger btn-sm" href="{% url 'music:song_delete' song.pk %}">Elimina</a>
-			{% endif %}
-		</div>
-	</div>
+	{% include 'partials/song_card.html' %}
 	{% endfor %}
 </div>
 {% else %}

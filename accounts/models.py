@@ -13,6 +13,25 @@ class CustomUser(AbstractUser):
         choices=Role.choices,
         default=Role.LISTENER,
     )
+    bio = models.TextField(blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    favorite_genre = models.ForeignKey(
+        'music.Genre',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='fans',
+    )
+
+    AVATAR_COLORS = ['#f0803c', '#e0a15e', '#81b29a', '#6a8ec9', '#b07ba0', '#c96a6a']
+
+    @property
+    def avatar_color(self):
+        return self.AVATAR_COLORS[sum(ord(c) for c in self.username) % len(self.AVATAR_COLORS)]
+
+    @property
+    def initial(self):
+        return self.username[0].upper() if self.username else '?'
 
     @property
     def is_curator(self):

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }} — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="panel profile-head">
+	{% include 'partials/avatar.html' with profile_user=profile_user size='avatar-lg' %}
+	<div>
+		<h2 class="mb-0">
+			{{ profile_user.username }}
+			{% if profile_user.is_superuser %}<span class="role-badge admin">Admin</span>
+			{% elif profile_user.role == 'curator' %}<span class="role-badge curator">Curator</span>
+			{% elif profile_user.role == 'moderator' %}<span class="role-badge moderator">Moderator</span>
+			{% else %}<span class="role-badge listener">Listener</span>{% endif %}
+		</h2>
+		{% if profile_user.bio %}<p class="mt-1 mb-1">{{ profile_user.bio }}</p>{% endif %}
+		<div class="list-meta">
+			Iscritto dal {{ profile_user.date_joined|date:"d M Y" }}
+			{% if profile_user.favorite_genre %} · Genere preferito: {{ profile_user.favorite_genre.name }}{% endif %}
+		</div>
+	</div>
+</div>
+
+<h2 class="mt-3">Playlist pubbliche</h2>
+{% if public_playlists %}
+<div class="music-grid">
+	{% for playlist in public_playlists %}
+	{% include 'partials/playlist_card.html' %}
+	{% endfor %}
+</div>
+{% else %}
+<div class="empty">Nessuna playlist pubblica.</div>
+{% endif %}
+
+<h2 class="mt-3">Commenti recenti</h2>
+{% if recent_comments %}
+{% for comment in recent_comments %}
+<div class="list-row">
+	<div class="list-main">
+		<div class="list-meta">
+			Su <a href="{% url 'music:song_detail' comment.song.pk %}">{{ comment.song.title }}</a> · {{ comment.created_at|date:"d M Y" }}
+		</div>
+		<div>{{ comment.text }}</div>
+	</div>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty">Nessun commento recente.</div>
+{% endif %}
+{% endblock %}
