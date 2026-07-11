@@ -94,8 +94,8 @@ def seed():
         )
         songs[title] = song
 
-    # Due brani con audio reale riproducibile: la durata coincide con quella del
-    # file, così l'auto-rilevamento della durata dal file è verificabile a colpo d'occhio.
+    # Due brani con audio riproducibile: la durata coincide con quella del
+    # file, così l'auto-rilevamento della durata dal file è verificabile
     Song.objects.update(audio_file='')
     songs['Bohemian Rhapsody'].audio_file = 'audio/demo_track_1.wav'
     songs['Bohemian Rhapsody'].duration = timedelta(seconds=150)

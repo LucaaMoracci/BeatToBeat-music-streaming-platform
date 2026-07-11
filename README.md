@@ -2,9 +2,9 @@
 
 **Studente:** Luca Moracci
 **Tipo di progetto:** Full-Stack Web Application — Music Streaming Service
-**Framework:** Django 5.x (Django Template Language, HTML/CSS scritti a mano — nessun framework CSS — e JavaScript vanilla)
-**Database:** SQLite in locale (incluso nella repo), PostgreSQL in produzione
-**Link di deploy:** 
+**Framework:** Django 5.x (Django Template Language, HTML/CSS e JavaScript vanilla)
+**Database:** SQLite (incluso nella repo, usato sia in locale sia in produzione)
+**Link di deploy:** https://web-production-07be1f.up.railway.app/
 
 ---
 
@@ -97,8 +97,10 @@ un'**immagine caricata** dall'utente oppure, in mancanza, un avatar generato dal
   file** per dimostrare il rilevamento automatico; le altre durate sono valori demo
   rappresentativi. Il rilevamento della durata avviene lato browser al momento del caricamento,
   quindi è indipendente dal formato.
-- **Produzione**: file statici serviti da WhiteNoise; database PostgreSQL configurato via
-  variabile d'ambiente `DATABASE_URL` (con `dj-database-url`); server WSGI `gunicorn`.
+- **Produzione**: deploy su Railway con server WSGI `gunicorn` e file statici serviti da
+  WhiteNoise; database **SQLite** (lo stesso `db.sqlite3` committato). Il codice è comunque
+  predisposto per PostgreSQL impostando la variabile `DATABASE_URL` (via `dj-database-url`),
+  opzione non usata in questo deploy.
 
 ---
 

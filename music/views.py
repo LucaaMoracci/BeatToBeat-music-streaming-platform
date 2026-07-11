@@ -136,7 +136,7 @@ class PlaylistDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'playlist'
 
     def get_queryset(self):
-        # L'owner e i collaboratori vedono sempre la playlist; gli altri solo se pubblica o editoriale.
+        # L'owner e i collaboratori vedono sempre la playlist, gli altri solo se pubblica o editoriale
         return Playlist.objects.filter(
             Q(owner=self.request.user)
             | Q(collaborators=self.request.user)
@@ -373,7 +373,7 @@ def remove_collaborator(request, pk, user_id):
 @login_required
 def toggle_save_playlist(request, pk):
     playlist = get_object_or_404(Playlist, pk=pk)
-    # Si possono salvare solo playlist pubbliche o editoriali non proprie.
+    # Si possono salvare solo playlist pubbliche o editoriali non proprie
     if playlist.owner == request.user or not (playlist.is_public or playlist.is_editorial):
         raise PermissionDenied
     if request.method == 'POST':

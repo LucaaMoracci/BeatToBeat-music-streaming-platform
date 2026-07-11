@@ -8,7 +8,7 @@
 </div>
 
 {% if recently_played %}
-<h2 class="section-head">⏱️ Ascoltati di recente</h2>
+<h2 class="section-head">Ascoltati di recente</h2>
 <div class="carousel">
 	{% for song in recently_played %}
 	{% include 'partials/song_card.html' %}
@@ -17,7 +17,7 @@
 {% endif %}
 
 {% if genre_songs %}
-<h2 class="section-head">🎧 Per il tuo genere: {{ favorite_genre.name }}</h2>
+<h2 class="section-head">Per il tuo genere: {{ favorite_genre.name }}</h2>
 <div class="carousel">
 	{% for song in genre_songs %}
 	{% include 'partials/song_card.html' %}
@@ -25,14 +25,14 @@
 </div>
 {% endif %}
 
-<h2 class="section-head">✨ Novità</h2>
+<h2 class="section-head">Novità</h2>
 <div class="carousel">
 	{% for song in latest_songs %}
 	{% include 'partials/song_card.html' %}
 	{% endfor %}
 </div>
 
-<h2 class="section-head">🔥 I più piaciuti</h2>
+<h2 class="section-head">I più piaciuti</h2>
 <div class="carousel">
 	{% for song in popular_songs %}
 	{% include 'partials/song_card.html' %}

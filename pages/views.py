@@ -10,14 +10,14 @@ class HomePageView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return redirect('accounts:signup')
+            return redirect('accounts:login')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        # Brani ascoltati di recente, senza ripetizioni (compatibile con SQLite e Postgres).
+        # Brani ascoltati di recente, senza ripetizioni
         recent = []
         seen = set()
         history = PlayHistory.objects.filter(user=user).select_related(
