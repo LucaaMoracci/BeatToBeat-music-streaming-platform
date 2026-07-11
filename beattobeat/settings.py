@@ -15,13 +15,11 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app', '.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', 'https://*.up.railway.app']
 RAILWAY_HOST = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
 if RAILWAY_HOST:
     ALLOWED_HOSTS.append(RAILWAY_HOST)
-
-CSRF_TRUSTED_ORIGINS = []
-if RAILWAY_HOST:
     CSRF_TRUSTED_ORIGINS.append(f'https://{RAILWAY_HOST}')
 
 
