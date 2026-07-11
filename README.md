@@ -92,6 +92,7 @@ un'**immagine caricata** dall'utente oppure, in mancanza, un avatar generato dal
 - **Validazione input**: tramite `ModelForm`, con messaggi di errore chiari.
 - **Frontend**: HTML + CSS (tema scuro in stile piattaforma di streaming),
   senza Bootstrap; interazioni con JavaScript vanilla (like, player, durata automatica).
+  Il layout è **responsive** e si adatta a desktop, tablet e telefono tramite media query CSS.
 - **File audio**: l'app accetta `mp3`, `wav`, `ogg`, `m4a`. La demo include **due tracce audio
   generate** (`.wav`, royalty-free) collegate a due brani, con **durata coincidente con il
   file** per dimostrare il rilevamento automatico; le altre durate sono valori demo

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}I miei commenti — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<div>
+		<h1 class="page-title">I miei commenti</h1>
+		<div class="page-subtitle">Tutti i commenti che hai scritto, dal più recente</div>
+	</div>
+</div>
+
+{% if comments %}
+{% for comment in comments %}
+<div class="list-row">
+	<div class="list-main">
+		<div class="list-meta">
+			Su <a href="{% url 'music:song_detail' comment.song.pk %}">{{ comment.song.title }}</a> · {{ comment.created_at|date:"d M Y, H:i" }}
+		</div>
+		<div>{{ comment.text }}</div>
+	</div>
+</div>
+{% endfor %}
+{% include 'partials/pagination.html' %}
+{% else %}
+<div class="empty">Non hai ancora scritto commenti.</div>
+{% endif %}
+
+<p class="mt-3"><a class="muted-link" href="{% url 'accounts:profile' %}">← Torna al profilo</a></p>
+{% endblock %}

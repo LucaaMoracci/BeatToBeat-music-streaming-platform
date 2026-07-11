@@ -44,7 +44,7 @@
 <h2 class="section-head">Le mie playlist ({{ playlists.count }})</h2>
 <p><a class="muted-link" href="{% url 'music:playlist_list' %}">Vai alle playlist →</a></p>
 
-<h2 class="section-head">Commenti recenti</h2>
+<h2 class="section-head">Commenti recenti ({{ comment_count }})</h2>
 {% if recent_comments %}
 {% for comment in recent_comments %}
 <div class="list-row">
@@ -56,6 +56,9 @@
 	</div>
 </div>
 {% endfor %}
+{% if comment_count > 5 %}
+<p class="mt-2"><a class="muted-link" href="{% url 'accounts:user_comments' %}">Vedi tutti i commenti ({{ comment_count }}) →</a></p>
+{% endif %}
 {% else %}
 <div class="empty">Non hai ancora scritto commenti.</div>
 {% endif %}

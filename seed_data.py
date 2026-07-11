@@ -40,6 +40,148 @@ SONGS = [
     ('Clair de Lune', 'Claude Debussy', 'Classical', (5, 5)),
 ]
 
+STORIES = {
+    'Stairway to Heaven': (
+        "Composta nel 1971, cresce lentamente da un arpeggio acustico fino a un finale elettrico. "
+        "Jimmy Page la mise a punto in un cottage gallese senza corrente, lontano dalle distrazioni della città."
+    ),
+    'Bohemian Rhapsody': (
+        "Registrata nel 1975, unisce ballata, opera e hard rock in quasi sei minuti. La sezione operistica "
+        "richiese settimane di sovraincisioni vocali, tanto che il nastro consumato divenne quasi trasparente."
+    ),
+    'Smells Like Teen Spirit': (
+        "Il riff nacque quasi per gioco, ispirato all'alternanza piano-forte dei Pixies. Divenne l'inno di una "
+        "generazione quasi contro la volontà della band, sorpresa dal successo planetario."
+    ),
+    'Billie Jean': (
+        "Il celebre giro di basso nacque da un'idea che Michael Jackson canticchiava di continuo. Quincy Jones "
+        "voleva cambiarlo, ma Jackson insistette: quella linea sarebbe diventata una delle più riconoscibili del pop."
+    ),
+    'Shape of You': (
+        "Pensata inizialmente per un'altra artista, Ed Sheeran decise di tenerla per sé. Il giro percussivo e il "
+        "ritornello immediato ne fecero uno dei singoli più ascoltati di sempre in streaming."
+    ),
+    'Take Five': (
+        "In un insolito tempo di 5/4, nacque come esperimento ritmico del quartetto di Dave Brubeck. Contro ogni "
+        "previsione, divenne il brano jazz strumentale più venduto della storia."
+    ),
+    'So What': (
+        "Due soli accordi e un'enorme libertà: è il manifesto del jazz modale. Miles Davis lo incise in poche "
+        "riprese, lasciando ampio spazio all'improvvisazione dei musicisti."
+    ),
+    'One More Time': (
+        "La voce filtrata col vocoder è un omaggio alla dance francese. I Daft Punk cercavano il suono di una "
+        "festa infinita, e il risultato divenne subito un classico da pista."
+    ),
+    'Strobe': (
+        "Oltre dieci minuti che salgono con pazienza fino a esplodere. deadmau5 la pensò come un viaggio più che "
+        "come una canzone, e la usa spesso per chiudere i suoi concerti."
+    ),
+    'Lose Yourself': (
+        "Scritta sul set del film 8 Mile, cattura la tensione dell'attimo prima di salire sul palco. Eminem la "
+        "incise tra una ripresa e l'altra, e gli valse un premio Oscar."
+    ),
+    'Juicy': (
+        "Il racconto in musica della scalata dalla povertà al successo. The Notorious B.I.G. trasformò la propria "
+        "biografia in un inno di riscatto tuttora amatissimo."
+    ),
+    'Clair de Lune': (
+        "Terzo movimento della Suite bergamasque, evoca il chiaro di luna con delicatezza impressionista. Debussy "
+        "la rivide per anni prima di pubblicarla, cercando la massima leggerezza."
+    ),
+}
+
+# (playlist, brani, opzioni). editorial implica pubblica.
+PLAYLISTS = [
+    ('Il mio mix', 'listener_demo', ['Bohemian Rhapsody', 'Billie Jean', 'Lose Yourself'],
+     dict(collaborators=['alice', 'bob'], pending=['curator_demo'])),
+    ('Rock Classics', 'alice', ['Stairway to Heaven', 'Bohemian Rhapsody', 'Smells Like Teen Spirit'],
+     dict(public=True, followers=['listener_demo', 'bob'])),
+    ('Editors Picks', 'curator_demo',
+     ['Bohemian Rhapsody', 'Billie Jean', 'Take Five', 'One More Time', 'Lose Yourself'],
+     dict(editorial=True, followers=['listener_demo', 'bob', 'alice'])),
+    ('Chill del pomeriggio', 'listener_demo', ['Clair de Lune', 'Take Five', 'So What'],
+     dict(public=True, followers=['alice'])),
+    ('Solo Jazz', 'bob', ['Take Five', 'So What'],
+     dict(public=True, followers=['listener_demo', 'alice'])),
+    ('Notti elettroniche', 'alice', ['One More Time', 'Strobe'],
+     dict(collaborators=['listener_demo'])),
+    ('Piano e quiete', 'curator_demo', ['Clair de Lune'],
+     dict(editorial=True, followers=['alice'])),
+    ('Carica da palestra', 'bob', ['Lose Yourself', 'Smells Like Teen Spirit', 'One More Time'],
+     dict(public=True, followers=['listener_demo'])),
+]
+
+LIKES = {
+    'Bohemian Rhapsody': ['listener_demo', 'alice', 'bob', 'curator_demo'],
+    'Billie Jean': ['listener_demo', 'alice', 'bob'],
+    'Lose Yourself': ['bob', 'listener_demo'],
+    'Stairway to Heaven': ['alice', 'bob'],
+    'Take Five': ['listener_demo', 'curator_demo'],
+    'One More Time': ['alice', 'bob', 'listener_demo'],
+    'Clair de Lune': ['alice', 'listener_demo'],
+    'So What': ['curator_demo'],
+    'Strobe': ['bob'],
+    'Shape of You': ['alice'],
+}
+
+PLAYS = {
+    'Bohemian Rhapsody': 128, 'Billie Jean': 94, 'Stairway to Heaven': 73, 'Smells Like Teen Spirit': 66,
+    'Take Five': 61, 'One More Time': 52, 'Lose Yourself': 47, 'Clair de Lune': 44,
+    'Strobe': 38, 'Juicy': 31, 'So What': 29, 'Shape of You': 25,
+}
+
+# (brano, autore, testo, chi mette like)
+COMMENTS = [
+    ('Bohemian Rhapsody', 'alice', "Un capolavoro senza tempo.", ['bob', 'listener_demo']),
+    ('Bohemian Rhapsody', 'bob', "La sezione operistica è pazzesca!", ['curator_demo']),
+    ('Bohemian Rhapsody', 'curator_demo', "Ogni sezione è un piccolo mondo a sé.", ['listener_demo']),
+    ('Billie Jean', 'listener_demo', "Il basso più famoso della storia.", ['alice']),
+    ('Billie Jean', 'bob', "Quel video ha cambiato la TV per sempre.", ['alice']),
+    ('Stairway to Heaven', 'bob', "Quel finale mi mette i brividi ogni volta.", ['alice', 'listener_demo']),
+    ('Smells Like Teen Spirit', 'alice', "Gli anni 90 in poco più di quattro minuti.", ['bob']),
+    ('Take Five', 'listener_demo', "Il 5/4 non è mai stato così elegante.", []),
+    ('So What', 'curator_demo', "Due accordi e infinite possibilità.", ['bob']),
+    ('One More Time', 'bob', "Impossibile restare fermi.", ['alice', 'listener_demo']),
+    ('Lose Yourself', 'listener_demo', "Motivazione allo stato puro.", ['bob']),
+    ('Shape of You', 'alice', "Ce l'ho in testa da giorni!", []),
+    ('Strobe', 'bob', "Dieci minuti che volano.", ['listener_demo']),
+    ('Strobe', 'alice', "Da ascoltare a volume alto.", []),
+    ('Clair de Lune', 'alice', "Perfetta per rilassarsi la sera.", ['listener_demo', 'bob']),
+    ('Juicy', 'listener_demo', "Un vero inno di riscatto.", []),
+]
+
+# cronologia ascolti per utente: (brano, minuti fa)
+HISTORY = {
+    'listener_demo': [
+        ('Bohemian Rhapsody', 2), ('Billie Jean', 8), ('Lose Yourself', 35),
+        ('Take Five', 90), ('Shape of You', 240), ('Bohemian Rhapsody', 1440),
+    ],
+    'alice': [
+        ('Stairway to Heaven', 5), ('Clair de Lune', 60),
+        ('One More Time', 300), ('Smells Like Teen Spirit', 720),
+    ],
+    'bob': [
+        ('Lose Yourself', 12), ('Juicy', 90), ('So What', 600), ('One More Time', 1500),
+    ],
+}
+
+# commenti già rimossi da un moderatore: (moderatore, autore, brano, testo, motivazione)
+REPORTS = [
+    ('moderator_demo', 'bob', 'Bohemian Rhapsody',
+     "Compra follower a poco prezzo su spam-link.xyz!",
+     "Spam: link promozionale non consentito."),
+    ('moderator_demo', 'alice', 'Billie Jean',
+     "Questo brano fa schifo e chi lo ascolta pure.",
+     "Linguaggio offensivo verso altri utenti."),
+    ('admin_demo', 'bob', 'Take Five',
+     "Seguitemi sul mio canale, metto musica meglio di questa!",
+     "Autopromozione ripetuta e fuori tema."),
+    ('moderator_demo', 'alice', 'Lose Yourself',
+     "aaaaaa primo!!!! aaaaa",
+     "Commento privo di contenuto (flood)."),
+]
+
 
 def seed():
     users = {}
@@ -104,75 +246,53 @@ def seed():
     songs['Billie Jean'].duration = timedelta(seconds=200)
     songs['Billie Jean'].save()
 
-    STORIES = {
-        'Bohemian Rhapsody': (
-            'Registrata nel 1975, la canzone unisce ballata, opera e hard rock in quasi sei minuti. '
-            'La sezione operistica richiese settimane di sovraincisioni vocali, tanto che il nastro '
-            'consumato dalle registrazioni divenne quasi trasparente.'
-        ),
-        'Billie Jean': (
-            'Il celebre giro di basso nacque da un\'idea che Michael Jackson canticchiava di continuo. '
-            'Il produttore Quincy Jones voleva cambiarlo, ma Jackson insistette: quella linea sarebbe '
-            'diventata una delle piu riconoscibili della storia del pop.'
-        ),
-    }
     for title, story in STORIES.items():
         songs[title].story = story
         songs[title].save()
 
-    mix, _ = Playlist.objects.get_or_create(name='Il mio mix', owner=users['listener_demo'])
-    mix.songs.set([songs['Bohemian Rhapsody'], songs['Billie Jean'], songs['Lose Yourself']])
-    mix.collaborators.set([users['alice'], users['bob']])
-    mix.pending_collaborators.set([users['curator_demo']])
+    for name, owner, song_titles, opts in PLAYLISTS:
+        playlist, _ = Playlist.objects.get_or_create(name=name, owner=users[owner])
+        playlist.is_editorial = opts.get('editorial', False)
+        playlist.is_public = opts.get('public', False) or playlist.is_editorial
+        playlist.save()
+        playlist.songs.set([songs[t] for t in song_titles])
+        playlist.followers.set([users[u] for u in opts.get('followers', [])])
+        playlist.collaborators.set([users[u] for u in opts.get('collaborators', [])])
+        playlist.pending_collaborators.set([users[u] for u in opts.get('pending', [])])
 
-    rock, _ = Playlist.objects.get_or_create(name='Rock Classics', owner=users['alice'])
-    rock.is_public = True
-    rock.save()
-    rock.songs.set([s for s in songs.values() if s.genre.name == 'Rock'])
-    rock.followers.set([users['listener_demo']])
+    for title, likers in LIKES.items():
+        songs[title].likes.set([users[u] for u in likers])
 
-    editorial, _ = Playlist.objects.get_or_create(name='Editors Picks', owner=users['curator_demo'])
-    editorial.is_public = True
-    editorial.is_editorial = True
-    editorial.save()
-    editorial.songs.set(list(songs.values())[:5])
-    editorial.followers.set([users['listener_demo'], users['bob']])
-
-    songs['Bohemian Rhapsody'].likes.set([users['listener_demo'], users['alice'], users['bob'], users['curator_demo']])
-    songs['Billie Jean'].likes.set([users['listener_demo'], users['alice']])
-    songs['Lose Yourself'].likes.set([users['bob']])
-
-    for title, count in [('Bohemian Rhapsody', 128), ('Billie Jean', 94), ('Take Five', 61), ('Lose Yourself', 47), ('Stairway to Heaven', 39), ('Shape of You', 25)]:
+    for title, count in PLAYS.items():
         Song.objects.filter(pk=songs[title].pk).update(play_count=count)
 
-    c1, _ = Comment.objects.get_or_create(song=songs['Bohemian Rhapsody'], author=users['alice'], text='Un capolavoro senza tempo.')
-    c1.likes.set([users['bob'], users['listener_demo']])
-    Comment.objects.get_or_create(song=songs['Bohemian Rhapsody'], author=users['bob'], text='La sezione operistica è pazzesca!')
-    Comment.objects.get_or_create(song=songs['Billie Jean'], author=users['listener_demo'], text='Il basso più famoso della storia.')
+    for song_title, author, text, likers in COMMENTS:
+        comment, _ = Comment.objects.get_or_create(
+            song=songs[song_title], author=users[author], text=text)
+        comment.likes.set([users[u] for u in likers])
 
-    PlayHistory.objects.filter(user=users['listener_demo']).delete()
     now = timezone.now()
-    plays = [
-        ('Bohemian Rhapsody', 2),
-        ('Billie Jean', 8),
-        ('Lose Yourself', 35),
-        ('Take Five', 90),
-        ('Shape of You', 240),
-        ('Bohemian Rhapsody', 1440),
-    ]
-    for title, minutes_ago in plays:
-        entry = PlayHistory.objects.create(user=users['listener_demo'], song=songs[title])
-        PlayHistory.objects.filter(pk=entry.pk).update(played_at=now - timedelta(minutes=minutes_ago))
+    for username, plays in HISTORY.items():
+        PlayHistory.objects.filter(user=users[username]).delete()
+        for title, minutes_ago in plays:
+            entry = PlayHistory.objects.create(user=users[username], song=songs[title])
+            PlayHistory.objects.filter(pk=entry.pk).update(
+                played_at=now - timedelta(minutes=minutes_ago))
 
-    ModerationReport.objects.get_or_create(
-        moderator=users['moderator_demo'],
-        comment_author=users['bob'],
-        song=songs['Bohemian Rhapsody'],
-        comment_text='Compra follower a poco prezzo su spam-link.xyz!',
-        defaults={'reason': 'Spam: link promozionale non consentito.'},
+    for mod, author, song_title, comment_text, reason in REPORTS:
+        ModerationReport.objects.get_or_create(
+            moderator=users[mod],
+            comment_author=users[author],
+            song=songs[song_title],
+            comment_text=comment_text,
+            defaults={'reason': reason},
+        )
+
+    print(
+        f'Dati creati: {len(users)} utenti, {len(genres)} generi, {len(songs)} brani, '
+        f'{Playlist.objects.count()} playlist, {Comment.objects.count()} commenti, '
+        f'{ModerationReport.objects.count()} report.'
     )
-
-    print(f'Dati creati: {len(users)} utenti, {len(genres)} generi, {len(songs)} brani, {Playlist.objects.count()} playlist.')
 
 
 if __name__ == '__main__':

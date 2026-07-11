@@ -7,6 +7,7 @@ from .views import (
     ProfileUpdateView,
     PublicProfileView,
     SignUpView,
+    UserCommentsView,
     UserProfileView,
 )
 
@@ -20,5 +21,6 @@ urlpatterns = [
     path('profile/edit/', ProfileUpdateView.as_view(), name='profile_edit'),
     path('piaciuti/', LikedSongsView.as_view(), name='liked_songs'),
     path('cronologia/', PlayHistoryView.as_view(), name='play_history'),
+    path('commenti/', UserCommentsView.as_view(), name='user_comments'),
     path('u/<str:username>/', PublicProfileView.as_view(), name='public_profile'),
 ]

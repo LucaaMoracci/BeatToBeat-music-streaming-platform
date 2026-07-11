@@ -1,21 +1,14 @@
-# Ambiente virtuale
 .venv/
 venv/
 
-# Bytecode Python
 __pycache__/
 *.py[cod]
 
-# File statici raccolti da collectstatic (rigenerati in build)
 staticfiles/
 
-# Variabili d'ambiente locali
 .env
 
-# File di sistema / IDE
 .DS_Store
 .idea/
 .vscode/
-.claude/
 
-# Nota: db.sqlite3 è volutamente committato (dati demo richiesti dal progetto).

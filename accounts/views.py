@@ -27,7 +27,8 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
         context['liked_songs'] = user.liked_songs.all()[:5]
         context['liked_count'] = user.liked_songs.count()
         context['playlists'] = user.playlists.all()
-        context['recent_comments'] = user.comments.all()[:5]
+        context['recent_comments'] = user.comments.select_related('song')[:5]
+        context['comment_count'] = user.comments.count()
         context['play_history'] = user.play_history.select_related('song')[:5]
         context['history_count'] = user.play_history.count()
         return context
@@ -75,3 +76,12 @@ class PlayHistoryView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.request.user.play_history.select_related('song')
+
+
+class UserCommentsView(LoginRequiredMixin, ListView):
+    template_name = 'accounts/user_comments.html'
+    context_object_name = 'comments'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return self.request.user.comments.select_related('song')
