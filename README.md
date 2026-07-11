@@ -19,7 +19,7 @@ Oltre alle normali operazioni CRUD, il progetto include: riproduzione audio con 
 fisso in fondo alla pagina, **rilevamento automatico della durata** dei brani dal file
 audio caricato (lato browser, in JavaScript), like e commenti asincroni, **playlist
 collaborative con sistema di inviti da accettare**, **cronologia degli ascolti** con pagine
-dedicate paginate, e una **moderazione dei commenti con report motivato**. Il livello dati
+dedicate, e una **moderazione dei commenti con report motivato**. Il livello dati
 modella diverse relazioni (ForeignKey e Many-to-Many) per supportare playlist, collaboratori,
 follower, like e cronologia. L'obiettivo è realizzare un'applicazione web interattiva che
 riproduca i pattern architetturali di una piattaforma di streaming, interamente nell'ecosistema
@@ -90,7 +90,7 @@ un'**immagine caricata** dall'utente oppure, in mancanza, un avatar generato dal
 - **Class-based view**: il progetto usa ampiamente le generic CBV (`ListView`, `DetailView`,
   `CreateView`, `UpdateView`, `DeleteView`, `TemplateView`), con paginazione (`paginate_by`).
 - **Validazione input**: tramite `ModelForm`, con messaggi di errore chiari.
-- **Frontend**: HTML + CSS scritti a mano (tema scuro in stile piattaforma di streaming),
+- **Frontend**: HTML + CSS (tema scuro in stile piattaforma di streaming),
   senza Bootstrap; interazioni con JavaScript vanilla (like, player, durata automatica).
 - **File audio**: l'app accetta `mp3`, `wav`, `ogg`, `m4a`. La demo include **due tracce audio
   generate** (`.wav`, royalty-free) collegate a due brani, con **durata coincidente con il
@@ -223,5 +223,5 @@ funzionalità sono coperte da questi test).
 
 ## Uso dell'intelligenza artificiale
 
-Durante lo sviluppo sono stati utilizzati assistenti AI come supporto (stesura della documentazione, generazione dei dati demo e suggerimenti di refactoring).
+Durante lo sviluppo sono stati utilizzati assistenti AI come supporto (stesura del README, generazione dei dati demo e suggerimenti di refactoring).
 
