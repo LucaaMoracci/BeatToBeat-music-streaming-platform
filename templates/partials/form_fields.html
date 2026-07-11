@@ -9,6 +9,7 @@
 {% for field in form %}
 {% if field.is_hidden %}
 {{ field }}
+{% elif field.name == skip %}
 {% else %}
 <div class="form-group">
 	<label for="{{ field.id_for_label }}">{{ field.label }}</label>

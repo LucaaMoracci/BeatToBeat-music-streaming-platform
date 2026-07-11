@@ -23,7 +23,9 @@ class CustomUserCreationForm(UserCreationForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['bio', 'birth_date', 'favorite_genre']
+        fields = ['avatar_image', 'bio', 'birth_date', 'favorite_genre']
+        labels = {'avatar_image': 'Immagine profilo'}
+        help_texts = {'avatar_image': 'Lascia vuoto per usare l\'avatar con l\'iniziale.'}
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Racconta qualcosa di te...'}),
             'birth_date': forms.DateInput(attrs={'type': 'date'}),

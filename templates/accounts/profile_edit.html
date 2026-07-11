@@ -6,10 +6,37 @@
 <div class="form-page">
 	<div class="panel form-card">
 		<h1 class="form-card-title">Modifica profilo</h1>
-		<p class="form-card-sub">Aggiorna bio, data di nascita e genere preferito</p>
-		<form method="post">
+		<p class="form-card-sub">Aggiorna immagine, bio, data di nascita e genere preferito</p>
+		<form method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-			{% include 'partials/form_fields.html' %}
+
+			<div class="form-group">
+				<label for="id_avatar_image">Immagine profilo</label>
+				<div class="avatar-edit">
+					{% if form.instance.avatar_image %}
+					<img id="avatar-preview" class="avatar-preview" src="{{ form.instance.avatar_image.url }}" alt="Immagine attuale">
+					{% else %}
+					<span id="avatar-preview" class="avatar-preview" style="background-color: {{ user.avatar_color }};">{{ user.initial }}</span>
+					{% endif %}
+					<div class="avatar-edit-controls">
+						<label for="id_avatar_image" class="btn btn-ghost btn-sm">Scegli un'immagine</label>
+						<input type="file" name="avatar_image" id="id_avatar_image" accept="image/*">
+						<span id="avatar-filename" class="avatar-filename">Nessun file selezionato</span>
+						{% if form.instance.avatar_image %}
+						<label class="avatar-clear">
+							<input type="checkbox" name="avatar_image-clear" id="avatar_image-clear">
+							Rimuovi l'immagine attuale
+						</label>
+						{% endif %}
+					</div>
+				</div>
+				<span class="help-text">Lascia vuoto per usare l'avatar con l'iniziale.</span>
+				{% for error in form.avatar_image.errors %}
+				<div class="form-error">{{ error }}</div>
+				{% endfor %}
+			</div>
+
+			{% include 'partials/form_fields.html' with skip='avatar_image' %}
 			<div class="actions center mt-3">
 				<button type="submit" class="btn btn-accent">Salva</button>
 				<a class="btn btn-ghost" href="{% url 'accounts:profile' %}">Annulla</a>
@@ -17,4 +44,32 @@
 		</form>
 	</div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+	(function () {
+		var input = document.getElementById('id_avatar_image');
+		var name = document.getElementById('avatar-filename');
+		var preview = document.getElementById('avatar-preview');
+		if (!input) return;
+		input.addEventListener('change', function () {
+			var file = input.files[0];
+			if (!file) return;
+			name.textContent = file.name;
+			var url = URL.createObjectURL(file);
+			if (preview.tagName === 'IMG') {
+				preview.src = url;
+			} else {
+				var img = document.createElement('img');
+				img.id = 'avatar-preview';
+				img.className = 'avatar-preview';
+				img.src = url;
+				img.alt = 'Anteprima';
+				preview.replaceWith(img);
+				preview = img;
+			}
+		});
+	})();
+</script>
 {% endblock %}

@@ -71,6 +71,15 @@ def seed():
     users['bob'].favorite_genre = genres['Hip Hop']
     users['bob'].save()
 
+    avatars = {
+        'listener_demo': 'avatars/avatar_listener.png',
+        'curator_demo': 'avatars/avatar_curator.png',
+        'alice': 'avatars/avatar_alice.png',
+    }
+    for username, path in avatars.items():
+        users[username].avatar_image = path
+        users[username].save()
+
     curator = users['curator_demo']
     songs = {}
     for title, artist, genre_name, (minutes, seconds) in SONGS:

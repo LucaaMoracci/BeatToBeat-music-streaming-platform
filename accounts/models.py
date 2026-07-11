@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, Group
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 
@@ -21,6 +22,12 @@ class CustomUser(AbstractUser):
         null=True,
         blank=True,
         related_name='fans',
+    )
+    avatar_image = models.FileField(
+        upload_to='avatars/',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif', 'webp'])],
     )
 
     AVATAR_COLORS = ['#f0803c', '#e0a15e', '#81b29a', '#6a8ec9', '#b07ba0', '#c96a6a']

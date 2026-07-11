@@ -29,6 +29,24 @@
 		el.toggle.innerHTML = audio.paused ? ICON_PLAY : ICON_PAUSE;
 	}
 
+	const STORE_KEY = 'b2b_player';
+
+	function saveState() {
+		try {
+			sessionStorage.setItem(STORE_KEY, JSON.stringify({
+				src: audio.getAttribute('src') || '',
+				title: el.title.textContent,
+				artist: el.artist.textContent,
+				time: audio.currentTime || 0,
+				playing: !audio.paused,
+			}));
+		} catch (e) {}
+	}
+
+	function clearState() {
+		try { sessionStorage.removeItem(STORE_KEY); } catch (e) {}
+	}
+
 	function registerPlay(id) {
 		if (!id) return;
 		const token = document.querySelector('meta[name="csrf-token"]');
@@ -55,6 +73,7 @@
 		document.body.classList.add('is-playing');
 		audio.play().catch(function () {});
 		registerPlay(data.id);
+		saveState();
 	}
 
 	document.addEventListener('click', function (e) {
@@ -73,15 +92,16 @@
 		}
 	});
 
-	audio.addEventListener('play', syncIcon);
-	audio.addEventListener('pause', syncIcon);
-	audio.addEventListener('ended', syncIcon);
+	audio.addEventListener('play', function () { syncIcon(); saveState(); });
+	audio.addEventListener('pause', function () { syncIcon(); saveState(); });
+	audio.addEventListener('ended', function () { syncIcon(); clearState(); });
 
 	audio.addEventListener('timeupdate', function () {
 		const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
 		el.fill.style.width = pct + '%';
 		el.current.textContent = fmt(audio.currentTime);
 		el.duration.textContent = fmt(audio.duration);
+		saveState();
 	});
 
 	el.progress.addEventListener('click', function (e) {
@@ -94,6 +114,7 @@
 		audio.pause();
 		bar.classList.remove('is-visible');
 		document.body.classList.remove('is-playing');
+		clearState();
 	});
 
 	document.addEventListener('keydown', function (e) {
@@ -104,6 +125,23 @@
 			audio.paused ? audio.play().catch(function () {}) : audio.pause();
 		}
 	});
+
+	(function restore() {
+		let data;
+		try { data = JSON.parse(sessionStorage.getItem(STORE_KEY) || 'null'); } catch (e) { return; }
+		if (!data || !data.src) return;
+		el.title.textContent = data.title || '';
+		el.artist.textContent = data.artist || '';
+		audio.src = data.src;
+		bar.classList.add('is-visible');
+		document.body.classList.add('is-playing');
+		audio.addEventListener('loadedmetadata', function () {
+			if (data.time && isFinite(data.time)) {
+				try { audio.currentTime = data.time; } catch (e) {}
+			}
+			if (data.playing) audio.play().catch(function () {});
+		}, { once: true });
+	})();
 
 	syncIcon();
 })();
