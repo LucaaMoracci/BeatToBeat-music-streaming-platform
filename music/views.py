@@ -11,7 +11,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import CommentForm, GenreForm, ModerationReportForm, PlaylistForm, SongForm
-from .models import Comment, Genre, ModerationReport, Playlist, Song
+from .models import Comment, Genre, ModerationReport, PlayHistory, Playlist, Song
 from .permissions import CuratorOnlyMixin
 
 
@@ -126,6 +126,7 @@ class PlaylistListView(LoginRequiredMixin, ListView):
         context['editorial_playlists'] = Playlist.objects.filter(is_editorial=True).exclude(owner=user)
         context['saved_playlists'] = user.saved_playlists.all()
         context['collaborative_playlists'] = user.collaborative_playlists.all()
+        context['pending_invitations'] = user.playlist_invitations.all()
         return context
 
 
@@ -209,10 +210,11 @@ def toggle_like_song(request, pk):
 @login_required
 def register_play(request, pk):
     if request.method == 'POST':
+        song = get_object_or_404(Song, pk=pk)
         Song.objects.filter(pk=pk).update(play_count=F('play_count') + 1)
-        row = Song.objects.filter(pk=pk).values('play_count').first()
-        if row is not None:
-            return JsonResponse({'play_count': row['play_count']})
+        PlayHistory.objects.create(user=request.user, song=song)
+        song.refresh_from_db(fields=['play_count'])
+        return JsonResponse({'play_count': song.play_count})
     return HttpResponse(status=204)
 
 
@@ -320,21 +322,42 @@ def playlist_add_song(request, pk):
 
 
 @login_required
-def add_collaborator(request, pk):
+def invite_collaborator(request, pk):
     playlist = get_object_or_404(Playlist, pk=pk, owner=request.user)
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
-        collaborator = get_user_model().objects.filter(username=username).first()
-        if collaborator is None:
+        invited = get_user_model().objects.filter(username=username).first()
+        if invited is None:
             messages.error(request, f"Nessun utente '{username}'.")
-        elif collaborator == playlist.owner:
+        elif invited == playlist.owner:
             messages.info(request, "Sei già il proprietario della playlist.")
-        elif playlist.collaborators.filter(pk=collaborator.pk).exists():
-            messages.info(request, f"{collaborator.username} è già un collaboratore.")
+        elif playlist.collaborators.filter(pk=invited.pk).exists():
+            messages.info(request, f"{invited.username} è già un collaboratore.")
+        elif playlist.pending_collaborators.filter(pk=invited.pk).exists():
+            messages.info(request, f"{invited.username} ha già un invito in attesa.")
         else:
-            playlist.collaborators.add(collaborator)
-            messages.success(request, f"{collaborator.username} può ora modificare la playlist.")
+            playlist.pending_collaborators.add(invited)
+            messages.success(request, f"Invito inviato a {invited.username}.")
     return redirect('music:playlist_detail', pk=playlist.pk)
+
+
+@login_required
+def accept_invitation(request, pk):
+    playlist = get_object_or_404(Playlist, pk=pk, pending_collaborators=request.user)
+    if request.method == 'POST':
+        playlist.pending_collaborators.remove(request.user)
+        playlist.collaborators.add(request.user)
+        messages.success(request, f"Ora collabori a '{playlist.name}'.")
+    return redirect('music:playlist_detail', pk=playlist.pk)
+
+
+@login_required
+def decline_invitation(request, pk):
+    playlist = get_object_or_404(Playlist, pk=pk, pending_collaborators=request.user)
+    if request.method == 'POST':
+        playlist.pending_collaborators.remove(request.user)
+        messages.info(request, f"Invito a '{playlist.name}' rifiutato.")
+    return redirect('music:playlist_list')
 
 
 @login_required
@@ -342,6 +365,7 @@ def remove_collaborator(request, pk, user_id):
     playlist = get_object_or_404(Playlist, pk=pk, owner=request.user)
     if request.method == 'POST':
         playlist.collaborators.remove(user_id)
+        playlist.pending_collaborators.remove(user_id)
         messages.info(request, "Collaboratore rimosso.")
     return redirect('music:playlist_detail', pk=playlist.pk)
 

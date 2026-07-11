@@ -52,6 +52,7 @@
 		el.title.textContent = data.title || '';
 		el.artist.textContent = data.artist || '';
 		bar.classList.add('is-visible');
+		document.body.classList.add('is-playing');
 		audio.play().catch(function () {});
 		registerPlay(data.id);
 	}
@@ -92,6 +93,7 @@
 	el.close.addEventListener('click', function () {
 		audio.pause();
 		bar.classList.remove('is-visible');
+		document.body.classList.remove('is-playing');
 	});
 
 	document.addEventListener('keydown', function (e) {

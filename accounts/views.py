@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, TemplateView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView, UpdateView
 
 from .forms import CustomUserCreationForm, ProfileUpdateForm
 from .models import CustomUser
@@ -24,9 +24,12 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['liked_songs'] = user.liked_songs.all()
+        context['liked_songs'] = user.liked_songs.all()[:5]
+        context['liked_count'] = user.liked_songs.count()
         context['playlists'] = user.playlists.all()
         context['recent_comments'] = user.comments.all()[:5]
+        context['play_history'] = user.play_history.select_related('song')[:5]
+        context['history_count'] = user.play_history.count()
         return context
 
 
@@ -54,3 +57,21 @@ class PublicProfileView(LoginRequiredMixin, DetailView):
         ).distinct()
         context['recent_comments'] = target.comments.all()[:5]
         return context
+
+
+class LikedSongsView(LoginRequiredMixin, ListView):
+    template_name = 'accounts/liked_songs.html'
+    context_object_name = 'songs'
+    paginate_by = 15
+
+    def get_queryset(self):
+        return self.request.user.liked_songs.select_related('genre')
+
+
+class PlayHistoryView(LoginRequiredMixin, ListView):
+    template_name = 'accounts/play_history.html'
+    context_object_name = 'history'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return self.request.user.play_history.select_related('song')

@@ -31,9 +31,12 @@
 	</div>
 </div>
 
-<h2 class="section-head">Brani piaciuti ({{ liked_songs.count }})</h2>
+<h2 class="section-head">Brani piaciuti ({{ liked_count }})</h2>
 {% if liked_songs %}
 {% include 'partials/track_list.html' with songs=liked_songs %}
+{% if liked_count > 5 %}
+<p class="mt-2"><a class="muted-link" href="{% url 'accounts:liked_songs' %}">Vedi tutti i {{ liked_count }} brani piaciuti →</a></p>
+{% endif %}
 {% else %}
 <div class="empty">Non hai ancora messo like a nessun brano.</div>
 {% endif %}
@@ -55,5 +58,25 @@
 {% endfor %}
 {% else %}
 <div class="empty">Non hai ancora scritto commenti.</div>
+{% endif %}
+
+<h2 class="section-head">Cronologia ascolti ({{ history_count }})</h2>
+{% if play_history %}
+{% for entry in play_history %}
+<div class="list-row">
+	<div class="list-main">
+		<div>
+			<a href="{% url 'music:song_detail' entry.song.pk %}">{{ entry.song.title }}</a>
+			<span class="text-muted">· {{ entry.song.artist }}</span>
+		</div>
+		<div class="list-meta">Ascoltato il {{ entry.played_at|date:"d M Y, H:i" }}</div>
+	</div>
+</div>
+{% endfor %}
+{% if history_count > 5 %}
+<p class="mt-2"><a class="muted-link" href="{% url 'accounts:play_history' %}">Vedi tutta la cronologia ({{ history_count }}) →</a></p>
+{% endif %}
+{% else %}
+<div class="empty">Nessun ascolto registrato. Riproduci un brano per iniziare!</div>
 {% endif %}
 {% endblock %}

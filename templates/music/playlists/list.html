@@ -11,6 +11,30 @@
 	<a class="btn btn-accent" href="{% url 'music:playlist_create' %}">+ Nuova playlist</a>
 </div>
 
+{% if pending_invitations %}
+<div class="panel mt-3">
+	<h3>Inviti a collaborare</h3>
+	{% for playlist in pending_invitations %}
+	<div class="invite-row">
+		<div>
+			<strong>{{ playlist.name }}</strong>
+			<span class="text-muted">· invito da {{ playlist.owner.username }}</span>
+		</div>
+		<div class="invite-actions">
+			<form method="post" action="{% url 'music:accept_invitation' playlist.pk %}">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-accent btn-sm">Accetta</button>
+			</form>
+			<form method="post" action="{% url 'music:decline_invitation' playlist.pk %}">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-ghost btn-sm">Rifiuta</button>
+			</form>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endif %}
+
 <h2 class="section-head">Le mie playlist</h2>
 {% if playlists %}
 <div class="carousel">

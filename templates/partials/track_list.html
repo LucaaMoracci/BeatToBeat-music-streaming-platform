@@ -29,7 +29,7 @@
 		<div class="track-plays">{{ song.play_count }}</div>
 		<div class="track-end">
 			{% include 'partials/like_button.html' %}
-			<span class="track-dur">{{ song.duration }}</span>
+			<span class="track-dur">{{ song.duration|default:"—" }}</span>
 		</div>
 		{% if remove_playlist and can_remove %}
 		<form method="post" action="{% url 'music:remove_from_playlist' remove_playlist.id song.id %}" class="track-curator">

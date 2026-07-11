@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Cronologia ascolti — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<div>
+		<h1 class="page-title">Cronologia ascolti</h1>
+		<div class="page-subtitle">Tutti i brani che hai riprodotto, dal più recente</div>
+	</div>
+</div>
+
+{% if history %}
+{% for entry in history %}
+<div class="list-row">
+	<div class="list-main">
+		<div>
+			<a href="{% url 'music:song_detail' entry.song.pk %}">{{ entry.song.title }}</a>
+			<span class="text-muted">· {{ entry.song.artist }}</span>
+		</div>
+		<div class="list-meta">Ascoltato il {{ entry.played_at|date:"d M Y, H:i" }}</div>
+	</div>
+</div>
+{% endfor %}
+{% include 'partials/pagination.html' %}
+{% else %}
+<div class="empty">Nessun ascolto registrato. Riproduci un brano per iniziare!</div>
+{% endif %}
+
+<p class="mt-3"><a class="muted-link" href="{% url 'accounts:profile' %}">← Torna al profilo</a></p>
+{% endblock %}

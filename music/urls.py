@@ -32,6 +32,8 @@ urlpatterns = [
     path('playlists/<int:playlist_id>/remove/<int:song_id>/', views.remove_song_from_playlist, name='remove_from_playlist'),
     path('playlists/<int:pk>/save/', views.toggle_save_playlist, name='toggle_save_playlist'),
     path('playlists/<int:pk>/add-song/', views.playlist_add_song, name='playlist_add_song'),
-    path('playlists/<int:pk>/collaborators/add/', views.add_collaborator, name='add_collaborator'),
+    path('playlists/<int:pk>/invite/', views.invite_collaborator, name='invite_collaborator'),
+    path('playlists/<int:pk>/invite/accept/', views.accept_invitation, name='accept_invitation'),
+    path('playlists/<int:pk>/invite/decline/', views.decline_invitation, name='decline_invitation'),
     path('playlists/<int:pk>/collaborators/<int:user_id>/remove/', views.remove_collaborator, name='remove_collaborator'),
 ]

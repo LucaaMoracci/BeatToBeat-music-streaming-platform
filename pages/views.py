@@ -2,7 +2,7 @@ from django.db.models import Count
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-from music.models import Song
+from music.models import PlayHistory, Song
 
 
 class HomePageView(TemplateView):
@@ -16,6 +16,21 @@ class HomePageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+
+        # Brani ascoltati di recente, senza ripetizioni (compatibile con SQLite e Postgres).
+        recent = []
+        seen = set()
+        history = PlayHistory.objects.filter(user=user).select_related(
+            'song', 'song__genre'
+        ).order_by('-played_at', '-id')[:60]
+        for entry in history:
+            if entry.song_id not in seen:
+                seen.add(entry.song_id)
+                recent.append(entry.song)
+            if len(recent) >= 6:
+                break
+        context['recently_played'] = recent
+
         context['latest_songs'] = Song.objects.all()[:6]
         context['popular_songs'] = Song.objects.annotate(
             num_likes=Count('likes')

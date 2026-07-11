@@ -14,7 +14,7 @@
 		<span class="genre-chip">{{ song.genre.name }}</span>
 		{% if song.audio_file %}<span class="genre-chip">♪ Audio</span>{% endif %}
 	</div>
-	<div class="card-meta">{{ song.duration }} · {{ song.play_count }} ascolt{{ song.play_count|pluralize:"o,i" }}</div>
+	<div class="card-meta">{% if song.duration %}{{ song.duration }} · {% endif %}{{ song.play_count }} ascolt{{ song.play_count|pluralize:"o,i" }}</div>
 	{% if user.is_curator %}
 	<div class="card-actions">
 		<a class="btn btn-ghost btn-sm" href="{% url 'music:song_update' song.pk %}">Modifica</a>

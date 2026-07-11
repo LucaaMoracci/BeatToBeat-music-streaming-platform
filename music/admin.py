@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Genre, ModerationReport, Song, Playlist
+from .models import Genre, ModerationReport, PlayHistory, Song, Playlist
 
 
 @admin.register(Genre)
@@ -21,7 +21,7 @@ class PlaylistAdmin(admin.ModelAdmin):
     list_display = ['name', 'owner']
     list_filter = ['owner']
     search_fields = ['name']
-    filter_horizontal = ['songs', 'collaborators']
+    filter_horizontal = ['songs', 'collaborators', 'pending_collaborators']
 
 
 @admin.register(ModerationReport)
@@ -29,3 +29,10 @@ class ModerationReportAdmin(admin.ModelAdmin):
     list_display = ['moderator', 'comment_author', 'song', 'created_at']
     list_filter = ['created_at', 'moderator']
     search_fields = ['reason', 'comment_text']
+
+
+@admin.register(PlayHistory)
+class PlayHistoryAdmin(admin.ModelAdmin):
+    list_display = ['user', 'song', 'played_at']
+    list_filter = ['played_at', 'user']
+    search_fields = ['song__title', 'user__username']

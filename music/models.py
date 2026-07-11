@@ -31,13 +31,13 @@ class Song(models.Model):
         on_delete=models.CASCADE,
         related_name='added_songs',
     )
-    duration = models.DurationField()
+    duration = models.DurationField(blank=True, null=True)
     story = models.TextField(
         blank=True,
         help_text='Un breve racconto sul brano, mostrato nella sua pagina.',
     )
     audio_file = models.FileField(
-        upload_to='songs/',
+        upload_to='audio/',
         blank=True,
         null=True,
         validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav', 'ogg', 'm4a'])],
@@ -98,6 +98,11 @@ class Playlist(models.Model):
         related_name='collaborative_playlists',
         blank=True,
     )
+    pending_collaborators = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='playlist_invitations',
+        blank=True,
+    )
 
     class Meta:
         ordering = ['name']
@@ -144,3 +149,20 @@ class ModerationReport(models.Model):
 
     def __str__(self):
         return f'Report di {self.moderator} il {self.created_at:%d/%m/%Y}'
+
+
+class PlayHistory(models.Model):
+    """Registro degli ascolti di un utente, usato per la cronologia."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='play_history',
+    )
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='plays')
+    played_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-played_at', '-id']
+
+    def __str__(self):
+        return f'{self.user} ha ascoltato {self.song} il {self.played_at:%d/%m/%Y %H:%M}'

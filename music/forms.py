@@ -32,9 +32,10 @@ class SongForm(forms.ModelForm):
         fields = ['title', 'artist', 'genre', 'duration', 'story', 'audio_file']
         labels = {'story': 'Storia del brano'}
         help_texts = {
-            'duration': 'Formato hh:mm:ss (es. 0:03:30).',
+            'audio_file': 'La durata del brano viene rilevata automaticamente dal file caricato.',
         }
         widgets = {
+            'duration': forms.HiddenInput(),
             'story': forms.Textarea(attrs={
                 'rows': 4,
                 'placeholder': 'Racconta la genesi, un aneddoto o il significato del brano...',

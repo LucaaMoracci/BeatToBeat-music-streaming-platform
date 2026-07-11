@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Brani piaciuti — BeatToBeat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<div>
+		<h1 class="page-title">Brani piaciuti</h1>
+		<div class="page-subtitle">Tutti i brani a cui hai messo mi piace</div>
+	</div>
+</div>
+
+{% if songs %}
+{% include 'partials/track_list.html' %}
+{% include 'partials/pagination.html' %}
+{% else %}
+<div class="empty">Non hai ancora messo like a nessun brano.</div>
+{% endif %}
+
+<p class="mt-3"><a class="muted-link" href="{% url 'accounts:profile' %}">← Torna al profilo</a></p>
+{% endblock %}
