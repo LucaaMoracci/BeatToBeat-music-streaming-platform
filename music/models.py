@@ -32,6 +32,10 @@ class Song(models.Model):
         related_name='added_songs',
     )
     duration = models.DurationField()
+    story = models.TextField(
+        blank=True,
+        help_text='Un breve racconto sul brano, mostrato nella sua pagina.',
+    )
     audio_file = models.FileField(
         upload_to='songs/',
         blank=True,
@@ -89,6 +93,11 @@ class Playlist(models.Model):
         related_name='saved_playlists',
         blank=True,
     )
+    collaborators = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='collaborative_playlists',
+        blank=True,
+    )
 
     class Meta:
         ordering = ['name']
@@ -98,6 +107,16 @@ class Playlist(models.Model):
 
     def get_absolute_url(self):
         return reverse('music:playlist_detail', kwargs={'pk': self.pk})
+
+    def can_edit(self, user):
+        """L'owner, i collaboratori e gli admin possono modificare i brani."""
+        if not user.is_authenticated:
+            return False
+        return (
+            user == self.owner
+            or user.is_superuser
+            or self.collaborators.filter(pk=user.pk).exists()
+        )
 
 
 class ModerationReport(models.Model):

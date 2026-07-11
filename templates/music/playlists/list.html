@@ -22,6 +22,15 @@
 <div class="empty">Non hai ancora creato playlist. Inizia ora!</div>
 {% endif %}
 
+{% if collaborative_playlists %}
+<h2 class="section-head">Collaborative</h2>
+<div class="carousel">
+	{% for playlist in collaborative_playlists %}
+	{% include 'partials/playlist_card.html' %}
+	{% endfor %}
+</div>
+{% endif %}
+
 {% if editorial_playlists %}
 <h2 class="section-head">Playlist editoriali</h2>
 <div class="carousel">

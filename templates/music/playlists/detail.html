@@ -27,7 +27,7 @@
 	</div>
 </div>
 
-{% if playlist.owner == user and available_songs %}
+{% if can_edit and available_songs %}
 <div class="search-bar">
 	<form method="post" action="{% url 'music:playlist_add_song' playlist.pk %}" class="filter-row">
 		{% csrf_token %}
@@ -42,8 +42,38 @@
 </div>
 {% endif %}
 
+{% if playlist.owner == user or playlist.collaborators.all %}
+<div class="panel mt-3">
+	<h3>Collaboratori</h3>
+	<p class="text-muted mb-2">Chi collabora può aggiungere e rimuovere brani da questa playlist.</p>
+	<div class="collab-list">
+		<span class="collab-chip owner">{{ playlist.owner.username }} · proprietario</span>
+		{% for person in playlist.collaborators.all %}
+		<span class="collab-chip">
+			{{ person.username }}
+			{% if playlist.owner == user %}
+			<form method="post" action="{% url 'music:remove_collaborator' playlist.pk person.pk %}">
+				{% csrf_token %}
+				<button type="submit" class="collab-remove" title="Rimuovi collaboratore">×</button>
+			</form>
+			{% endif %}
+		</span>
+		{% empty %}
+		{% if playlist.owner == user %}<span class="text-muted">Ancora nessun collaboratore.</span>{% endif %}
+		{% endfor %}
+	</div>
+	{% if playlist.owner == user %}
+	<form method="post" action="{% url 'music:add_collaborator' playlist.pk %}" class="filter-row mt-2">
+		{% csrf_token %}
+		<input type="text" name="username" placeholder="Username da invitare..." aria-label="Username del collaboratore" required>
+		<button type="submit" class="btn btn-accent">Aggiungi collaboratore</button>
+	</form>
+	{% endif %}
+</div>
+{% endif %}
+
 {% if playlist.songs.all %}
-{% include 'partials/track_list.html' with songs=playlist.songs.all remove_playlist=playlist %}
+{% include 'partials/track_list.html' with songs=playlist.songs.all remove_playlist=playlist can_remove=can_edit %}
 {% else %}
 <div class="empty">
 	Playlist vuota.{% if playlist.owner == user %} Aggiungi brani dal <a href="{% url 'music:song_list' %}">catalogo</a>.{% endif %}

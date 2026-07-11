@@ -35,6 +35,13 @@
 		fetch('/music/songs/' + id + '/played/', {
 			method: 'POST',
 			headers: { 'X-CSRFToken': token ? token.content : '' },
+		}).then(function (r) {
+			return r.ok ? r.json() : null;
+		}).then(function (data) {
+			if (!data) return;
+			document.querySelectorAll('.play-count[data-song="' + id + '"]').forEach(function (el) {
+				el.textContent = data.play_count;
+			});
 		}).catch(function () {});
 	}
 

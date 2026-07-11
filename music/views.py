@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
@@ -124,6 +125,7 @@ class PlaylistListView(LoginRequiredMixin, ListView):
         user = self.request.user
         context['editorial_playlists'] = Playlist.objects.filter(is_editorial=True).exclude(owner=user)
         context['saved_playlists'] = user.saved_playlists.all()
+        context['collaborative_playlists'] = user.collaborative_playlists.all()
         return context
 
 
@@ -133,14 +135,19 @@ class PlaylistDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'playlist'
 
     def get_queryset(self):
-        # L'owner vede sempre la propria, le altre solo se pubbliche o editoriali.
+        # L'owner e i collaboratori vedono sempre la playlist; gli altri solo se pubblica o editoriale.
         return Playlist.objects.filter(
-            Q(owner=self.request.user) | Q(is_public=True) | Q(is_editorial=True)
+            Q(owner=self.request.user)
+            | Q(collaborators=self.request.user)
+            | Q(is_public=True)
+            | Q(is_editorial=True)
         ).distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.object.owner == self.request.user:
+        can_edit = self.object.can_edit(self.request.user)
+        context['can_edit'] = can_edit
+        if can_edit:
             context['available_songs'] = Song.objects.exclude(playlists=self.object)
         return context
 
@@ -203,6 +210,9 @@ def toggle_like_song(request, pk):
 def register_play(request, pk):
     if request.method == 'POST':
         Song.objects.filter(pk=pk).update(play_count=F('play_count') + 1)
+        row = Song.objects.filter(pk=pk).values('play_count').first()
+        if row is not None:
+            return JsonResponse({'play_count': row['play_count']})
     return HttpResponse(status=204)
 
 
@@ -284,7 +294,9 @@ def add_song_to_playlist(request, song_id):
 
 @login_required
 def remove_song_from_playlist(request, playlist_id, song_id):
-    playlist = get_object_or_404(Playlist, id=playlist_id, owner=request.user)
+    playlist = get_object_or_404(Playlist, id=playlist_id)
+    if not playlist.can_edit(request.user):
+        raise PermissionDenied
     song = get_object_or_404(Song, id=song_id)
     if request.method == 'POST':
         playlist.songs.remove(song)
@@ -294,7 +306,9 @@ def remove_song_from_playlist(request, playlist_id, song_id):
 
 @login_required
 def playlist_add_song(request, pk):
-    playlist = get_object_or_404(Playlist, pk=pk, owner=request.user)
+    playlist = get_object_or_404(Playlist, pk=pk)
+    if not playlist.can_edit(request.user):
+        raise PermissionDenied
     if request.method == 'POST':
         song = get_object_or_404(Song, pk=request.POST.get('song_id'))
         if playlist.songs.filter(id=song.id).exists():
@@ -302,6 +316,33 @@ def playlist_add_song(request, pk):
         else:
             playlist.songs.add(song)
             messages.success(request, f"'{song.title}' aggiunto a {playlist.name}.")
+    return redirect('music:playlist_detail', pk=playlist.pk)
+
+
+@login_required
+def add_collaborator(request, pk):
+    playlist = get_object_or_404(Playlist, pk=pk, owner=request.user)
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        collaborator = get_user_model().objects.filter(username=username).first()
+        if collaborator is None:
+            messages.error(request, f"Nessun utente '{username}'.")
+        elif collaborator == playlist.owner:
+            messages.info(request, "Sei già il proprietario della playlist.")
+        elif playlist.collaborators.filter(pk=collaborator.pk).exists():
+            messages.info(request, f"{collaborator.username} è già un collaboratore.")
+        else:
+            playlist.collaborators.add(collaborator)
+            messages.success(request, f"{collaborator.username} può ora modificare la playlist.")
+    return redirect('music:playlist_detail', pk=playlist.pk)
+
+
+@login_required
+def remove_collaborator(request, pk, user_id):
+    playlist = get_object_or_404(Playlist, pk=pk, owner=request.user)
+    if request.method == 'POST':
+        playlist.collaborators.remove(user_id)
+        messages.info(request, "Collaboratore rimosso.")
     return redirect('music:playlist_detail', pk=playlist.pk)
 
 

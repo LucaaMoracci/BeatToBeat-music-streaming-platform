@@ -28,7 +28,7 @@
 	--sidebar-w: 248px;
 	--player-h: 76px;
 
-	--font: 'Inter', system-ui, -apple-system, sans-serif;
+	--font: 'Inter', system-ui, -apple-system, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
 	--font-display: 'Bricolage Grotesque', 'Space Grotesk', var(--font);
 }
 
@@ -482,6 +482,58 @@ hr {
 	font-size: 0.9rem;
 }
 
+.song-story {
+	color: var(--muted);
+	line-height: 1.7;
+	max-width: 70ch;
+}
+
+.collab-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+.collab-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 12px;
+	border-radius: 999px;
+	background: var(--panel);
+	border: 1px solid var(--border);
+	font-size: 0.85rem;
+	font-weight: 500;
+}
+
+.collab-chip.owner {
+	background: var(--card-hover);
+	color: var(--text);
+}
+
+.collab-remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--faint);
+	font-size: 1rem;
+	line-height: 1;
+	cursor: pointer;
+	transition: color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.collab-remove:hover {
+	background: var(--accent);
+	color: var(--accent-ink);
+}
+
 .carousel {
 	display: flex;
 	gap: 18px;
@@ -507,14 +559,37 @@ hr {
 	padding: 8px;
 }
 
+.track-head,
 .track-row {
 	display: grid;
-	grid-template-columns: 34px minmax(0, 1fr) 150px 92px auto;
+	grid-template-columns: 34px minmax(0, 1fr) 150px 92px 108px;
 	align-items: center;
 	gap: 14px;
 	padding: 8px 12px;
+}
+
+.track-row {
+	position: relative;
 	border-radius: var(--radius-sm);
 	transition: background-color 0.2s var(--ease);
+}
+
+.track-head {
+	color: var(--faint);
+	font-size: 0.74rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	border-bottom: 1px solid var(--border);
+	margin-bottom: 6px;
+}
+
+.track-dur-h {
+	justify-self: end;
+}
+
+.track-dur-h svg {
+	width: 16px;
+	height: 16px;
 }
 
 .track-row:hover {
@@ -623,22 +698,34 @@ hr {
 }
 
 .track-curator {
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
 	display: flex;
 	gap: 6px;
+	padding: 4px 0 4px 14px;
+	border-radius: var(--radius-sm);
+	background: var(--card-hover);
 	opacity: 0;
+	pointer-events: none;
 	transition: opacity 0.2s var(--ease);
 }
 
 .track-row:hover .track-curator {
 	opacity: 1;
+	pointer-events: auto;
 }
 
 @media (max-width: 720px) {
+	.track-head,
 	.track-row {
-		grid-template-columns: 30px minmax(0, 1fr) auto;
+		grid-template-columns: 30px minmax(0, 1fr) 108px;
 	}
 	.track-genre,
-	.track-plays {
+	.track-plays,
+	.track-genre-h,
+	.track-plays-h {
 		display: none;
 	}
 }
@@ -1100,34 +1187,35 @@ textarea {
 }
 
 .cover-like .like-btn {
-	width: 34px;
-	height: 34px;
 	padding: 0;
-	border-radius: 50%;
-	background: rgba(0, 0, 0, 0.4);
-	backdrop-filter: blur(4px);
-	-webkit-backdrop-filter: blur(4px);
 	color: #ffffff;
 }
 
 .cover-like .like-btn:hover {
-	background: rgba(0, 0, 0, 0.6);
 	color: #ffffff;
 	transform: scale(1.1);
 }
 
 .cover-like .like-btn.liked,
 .cover-like .like-btn.liked:hover {
-	color: var(--accent);
+	color: #ffffff;
 }
 
 .cover-like .heart-icon {
 	width: 18px;
 	height: 18px;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
 }
 
 .cover-like .like-count {
 	display: none;
+}
+
+.detail-stats {
+	display: flex;
+	align-items: center;
+	gap: 22px;
+	margin-top: 6px;
 }
 
 .like-detail {
@@ -1136,9 +1224,29 @@ textarea {
 	gap: 8px;
 }
 
-.like-label {
+.like-detail .like-count {
+	color: var(--text);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.stat-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
 	color: var(--muted);
 	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+
+.stat-icon {
+	width: 18px;
+	height: 18px;
+}
+
+.stat-item .play-count {
+	color: var(--text);
+	font-weight: 600;
 }
 
 .comment {
@@ -1296,7 +1404,7 @@ textarea {
 }
 
 .player-time {
-	color: var(--faint);
+	color: var(--text);
 	font-size: 0.74rem;
 	font-variant-numeric: tabular-nums;
 	width: 36px;

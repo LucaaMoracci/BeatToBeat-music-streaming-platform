@@ -21,7 +21,7 @@ class PlaylistAdmin(admin.ModelAdmin):
     list_display = ['name', 'owner']
     list_filter = ['owner']
     search_fields = ['name']
-    filter_horizontal = ['songs']
+    filter_horizontal = ['songs', 'collaborators']
 
 
 @admin.register(ModerationReport)

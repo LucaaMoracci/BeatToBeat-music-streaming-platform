@@ -29,9 +29,16 @@ class CommentForm(forms.ModelForm):
 class SongForm(forms.ModelForm):
     class Meta:
         model = Song
-        fields = ['title', 'artist', 'genre', 'duration', 'audio_file']
+        fields = ['title', 'artist', 'genre', 'duration', 'story', 'audio_file']
+        labels = {'story': 'Storia del brano'}
         help_texts = {
             'duration': 'Formato hh:mm:ss (es. 0:03:30).',
+        }
+        widgets = {
+            'story': forms.Textarea(attrs={
+                'rows': 4,
+                'placeholder': 'Racconta la genesi, un aneddoto o il significato del brano...',
+            }),
         }
 
 

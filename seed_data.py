@@ -88,8 +88,25 @@ def seed():
         songs[title].audio_file = 'songs/demo_tone.wav'
         songs[title].save()
 
+    STORIES = {
+        'Bohemian Rhapsody': (
+            'Registrata nel 1975, la canzone unisce ballata, opera e hard rock in quasi sei minuti. '
+            'La sezione operistica richiese settimane di sovraincisioni vocali, tanto che il nastro '
+            'consumato dalle registrazioni divenne quasi trasparente.'
+        ),
+        'Billie Jean': (
+            'Il celebre giro di basso nacque da un\'idea che Michael Jackson canticchiava di continuo. '
+            'Il produttore Quincy Jones voleva cambiarlo, ma Jackson insistette: quella linea sarebbe '
+            'diventata una delle piu riconoscibili della storia del pop.'
+        ),
+    }
+    for title, story in STORIES.items():
+        songs[title].story = story
+        songs[title].save()
+
     mix, _ = Playlist.objects.get_or_create(name='Il mio mix', owner=users['listener_demo'])
     mix.songs.set([songs['Bohemian Rhapsody'], songs['Billie Jean'], songs['Lose Yourself']])
+    mix.collaborators.set([users['alice'], users['bob']])
 
     rock, _ = Playlist.objects.get_or_create(name='Rock Classics', owner=users['alice'])
     rock.is_public = True
