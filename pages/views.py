@@ -1,5 +1,5 @@
 from django.db.models import Count
-from django.shortcuts import redirect
+from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from music.models import PlayHistory, Song
@@ -10,7 +10,7 @@ class HomePageView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return redirect('accounts:login')
+            return render(request, 'pages/landing.html')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
